@@ -1,13 +1,13 @@
 import React from 'react';
 import './App.css';
 
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu,  Icon } from 'antd';
 
-const { Header, Sider, Footer, Content } = Layout;
+const { Header, Sider,  Content } = Layout;
 
 class App extends React.Component {
   state = {
-    collapsed: false,
+    collapsed: true,
   };
 
   toggle = () => {
@@ -19,7 +19,7 @@ class App extends React.Component {
   render() {
     return (
       <Layout
-      style={{ minHeight: '100%' }}
+        style={{ minHeight: '100%' }}
       >
         <Sider
           trigger={null}
@@ -27,9 +27,9 @@ class App extends React.Component {
           collapsed={this.state.collapsed}
         >
           <div className="logo" />
-          <Menu 
-            theme="dark" 
-            mode="inline" 
+          <Menu
+            theme="dark"
+            mode="inline"
             defaultSelectedKeys={['1']}>
             <Menu.Item key="1">
               <Icon type="user" />
@@ -53,12 +53,9 @@ class App extends React.Component {
               onClick={this.toggle}
             />
           </Header>
-          <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
+          <Content style={{ margin: '16px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
             Content
           </Content>
-          <Footer style={{ textAlign: 'center' }}>
-            Ant Design ©2018 Created by Ant UED
-          </Footer>
         </Layout>
       </Layout>
     );
