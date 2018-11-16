@@ -1,65 +1,67 @@
-import React from 'react';
 import './App.css';
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { Layout, Menu, Icon } from 'antd';
 
-import { Layout, Menu,  Icon } from 'antd';
+const { Header, Content, Footer, Sider } = Layout;
 
-const { Header, Sider,  Content } = Layout;
+class App extends Component {
 
-class App extends React.Component {
-  state = {
-    collapsed: true,
-  };
+    state = {
+        collapsed: false,
+    };
 
-  toggle = () => {
-    this.setState({
-      collapsed: !this.state.collapsed,
-    });
-  }
+    onCollapse = (collapsed) => {
+        this.setState({ collapsed });
+    }
+    toggle = () => {
+        this.setState({
+            collapsed: !this.state.collapsed,
+        });
+    }
 
-  render() {
-    return (
-      <Layout
-        style={{ minHeight: '100%' }}
-      >
-        <Sider
-          trigger={null}
-          collapsible
-          collapsed={this.state.collapsed}
-        >
-          <div className="logo" />
-          <Menu
-            theme="dark"
-            mode="inline"
-            defaultSelectedKeys={['1']}>
-            <Menu.Item key="1">
-              <Icon type="user" />
-              <span>nav 1</span>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <Icon type="video-camera" />
-              <span>nav 2</span>
-            </Menu.Item>
-            <Menu.Item key="3">
-              <Icon type="upload" />
-              <span>nav 3</span>
-            </Menu.Item>
-          </Menu>
-        </Sider>
-        <Layout>
-          <Header style={{ background: '#fff', padding: 0 }}>
-            <Icon
-              className="trigger"
-              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-              onClick={this.toggle}
-            />
-          </Header>
-          <Content style={{ margin: '16px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
-            Content
-          </Content>
-        </Layout>
-      </Layout>
-    );
-  }
+    render() {
+        return (
+            <Router>
+                <Layout style={{ minHeight: '100vh' }}>
+
+                    <Sider
+                        collapsible
+                        collapsed={this.state.collapsed}
+                        onCollapse={this.onCollapse}>
+                        <div className="logo" />
+                        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+                            <Menu.Item key="1">
+                                <Icon type="pie-chart" />
+                                <span>Deshboard</span>
+                                <Link exact={true} to="/" />
+                            </Menu.Item>
+                            <Menu.Item key="2">
+                                <Icon type="desktop" />
+                                <span>Meseros</span>
+                                <Link to="/meseros" />
+                            </Menu.Item>
+                        </Menu>
+                    </Sider>
+                    <Layout>
+                        <Header style={{ background: '#fff', padding: 0, paddingLeft: 16 }}>
+                            <Icon
+                                className="trigger"
+                                type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+                                style={{ cursor: 'pointer' }}
+                                onClick={this.toggle}
+                            />
+                        </Header>
+                        <Content style={{ margin: '8px', padding: 24, background: '#fff', minHeight: 280 }}>
+                            <Route exact path="/" render={(props) => <h1>ROOT</h1>} />
+                            <Route path="/meseros" render={(props) => <h1>Meseros</h1>} />
+                        </Content>
+                    </Layout>
+
+                </Layout>
+            </Router>
+        );
+    }
 }
 
 export default App;
