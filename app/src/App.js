@@ -5,7 +5,6 @@ import { Layout, Menu, Icon } from 'antd';
 
 const { Header, Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
-const MenuItemGroup  = Menu.ItemGroup;
 
 class App extends Component {
 
