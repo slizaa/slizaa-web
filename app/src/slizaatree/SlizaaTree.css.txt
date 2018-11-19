@@ -1,0 +1,3 @@
+li.slizaa-focus > span.ant-tree-node-content-wrapper {
+  background-color: red;
+}

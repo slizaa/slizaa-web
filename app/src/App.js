@@ -1,9 +1,10 @@
 import './App.css';
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter, Route, Link } from "react-router-dom";
 import { Layout, Menu, Icon } from 'antd';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
+const SubMenu = Menu.SubMenu;
 
 class App extends Component {
 
@@ -22,7 +23,7 @@ class App extends Component {
 
     render() {
         return (
-            <Router>
+            <BrowserRouter>
                 <Layout style={{ minHeight: '100vh' }}>
 
                     <Sider
@@ -36,6 +37,18 @@ class App extends Component {
                                 <span>Deshboard</span>
                                 <Link exact={true} to="/" />
                             </Menu.Item>
+                            <SubMenu key="sub4" title={<span><Icon type="setting" /><span>Navigation Three</span></span>}>
+                                <Menu.Item key="9">
+                                    <span>Spunkie</span>
+                                    <Link to="/spunkie" />
+                                </Menu.Item>
+                                <Menu.Item key="10">
+                                    <span>Punkie</span>
+                                    <Link to="/punkie" />
+                                </Menu.Item>
+                                <Menu.Item key="11">Option 11</Menu.Item>
+                                <Menu.Item key="12">Option 12</Menu.Item>
+                            </SubMenu>
                             <Menu.Item key="2">
                                 <Icon type="desktop" />
                                 <span>Meseros</span>
@@ -55,11 +68,13 @@ class App extends Component {
                         <Content style={{ margin: '8px', padding: 24, background: '#fff', minHeight: 280 }}>
                             <Route exact path="/" render={(props) => <h1>ROOT</h1>} />
                             <Route path="/meseros" render={(props) => <h1>Meseros</h1>} />
+                            <Route path="/spunkie" render={(props) => <h1>Spunkie</h1>} />
+                            <Route path="/punkie" render={(props) => <h1>Punkie</h1>} />
                         </Content>
                     </Layout>
 
                 </Layout>
-            </Router>
+            </BrowserRouter>
         );
     }
 }
