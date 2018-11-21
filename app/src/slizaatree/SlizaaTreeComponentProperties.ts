@@ -1,0 +1,6 @@
+export class SlizaaTreeComponentProperties {
+
+    constructor() {
+        //
+    }
+}

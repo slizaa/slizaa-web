@@ -7,34 +7,36 @@ import * as React from 'react';
 import './SlizaaTree.css';
 import { SlizaaTreeComponentModel } from './SlizaaTreeComponentModel';
 import { SlizaaTreeComponentNode } from './SlizaaTreeComponentNode';
+import { SlizaaTreeComponentProperties } from './SlizaaTreeComponentProperties';
 
 const TreeNode = Tree.TreeNode;
 
-class SlizaaTree extends React.Component<any, SlizaaTreeComponentModel> {
+export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, SlizaaTreeComponentModel> {
 
   private slizaaTreeComponentModel : SlizaaTreeComponentModel; 
 
-  private keyMap = {
-    moveDown: 'down',
-    moveUp: 'up'
-  }
+  // private keyMap = {
+  //   moveDown: 'down',
+  //   moveUp: 'up'
+  // }
   
-  private handlers = {
-    'moveDown': (event : any) => {
-      this.slizaaTreeComponentModel.focusedNode = this.slizaaTreeComponentModel.rootNodes[0];
-      this.setState({
-        focusedNode: this.slizaaTreeComponentModel.focusedNode
-      });
-    },
-    'moveUp': (event : any) => console.log(event)
-  };
+  // private handlers = {
+  //   'moveDown': (event : any) => {
+  //     this.slizaaTreeComponentModel.focusedNode = this.slizaaTreeComponentModel.rootNodes[0];
+  //     this.setState({
+  //       focusedNode: this.slizaaTreeComponentModel.focusedNode
+  //     });
+  //   },
+  //   'moveUp': (event : any) => console.log(event)
+  // };
 
-  constructor(props : any) {
+  constructor(props : SlizaaTreeComponentProperties) {
     super(props);
     this.slizaaTreeComponentModel = new SlizaaTreeComponentModel();
   }
 
   public onExpand =  (expandedKeys: string[], info: AntTreeNodeExpandedEvent)  => {
+    // tslint:disable-next-line:no-console
     console.log(info.node.props.dataRef);
     return;
   }
@@ -61,21 +63,25 @@ class SlizaaTree extends React.Component<any, SlizaaTreeComponentModel> {
       }
 
       const key: string = treeNode.props.dataRef.key;
-      const queryString: string = (key === '-1') ? 'http://localhost:8080/rest/root' : 'http://localhost:8080/rest/node/' + key + '?resolveChildren=true';
-      const restRes: rm.IRestResponse<any> = await new rm.RestClient("hurz").get<any>(queryString);
-      if (restRes.statusCode === 200 && restRes.result.children) {
+    // tslint:disable-next-line:no-console
+    console.log(key);
 
-        treeNode.props.dataRef.children = new Array(restRes.result.children.length);
 
-        for (let i = 0; i < restRes.result.children.length; i++) {
-          treeNode.props.dataRef.children[i] = { title: restRes.result.children[i].label, key: restRes.result.children[i].id, parent: treeNode.props.dataRef};
-        }
+      // const queryString: string = (key === '-1') ? 'http://localhost:8080/rest/root' : 'http://localhost:8080/rest/node/' + key + '?resolveChildren=true';
+      // const restRes: rm.IRestResponse<any> = await new rm.RestClient("hurz").get<any>(queryString);
+      // if (restRes.statusCode === 200 && restRes.result.children) {
 
-        this.setState({
-          rootNodes: [...this.slizaaTreeComponentModel.rootNodes]
-        });
+      //   treeNode.props.dataRef.children = new Array(restRes.result.children.length);
 
-      }
+      //   for (let i = 0; i < restRes.result.children.length; i++) {
+      //     treeNode.props.dataRef.children[i] = { title: restRes.result.children[i].label, key: restRes.result.children[i].id, parent: treeNode.props.dataRef};
+      //   }
+
+      //   this.setState({
+      //     rootNodes: [...this.slizaaTreeComponentModel.rootNodes]
+      //   });
+
+      // }
       resolve();
     });
   }
@@ -107,7 +113,7 @@ class SlizaaTree extends React.Component<any, SlizaaTreeComponentModel> {
    */
   public render() {
     return (
-      <HotKeys keyMap={this.keyMap} handlers={this.handlers}>
+      // <HotKeys keyMap={this.keyMap} handlers={this.handlers}>
         <Tree
           multiple={false}
           selectable={false}
@@ -117,7 +123,7 @@ class SlizaaTree extends React.Component<any, SlizaaTreeComponentModel> {
         >
           {this.renderTreeNodes( this.slizaaTreeComponentModel.rootNodes )}
         </Tree>
-      </HotKeys>
+      // </HotKeys>
     );
   }
 }

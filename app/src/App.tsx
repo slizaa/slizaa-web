@@ -1,8 +1,11 @@
+import './App.css';
+
 import { Icon, Layout, Menu } from 'antd';
 import * as React from "react";
 import { Component } from "react";
 import { BrowserRouter, Link, Route, RouteComponentProps } from "react-router-dom";
-import './App.css';
+import { SlizaaTree } from './slizaatree/SlizaaTree';
+
 
 const { Header, Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -10,7 +13,7 @@ const SubMenu = Menu.SubMenu;
 class App extends Component {
 
   public state = {
-    collapsed: false,
+    collapsed: true,
   };
 
   public render() {
@@ -83,9 +86,7 @@ class App extends Component {
 
 function Dummy( match : RouteComponentProps<any> ):any {
   return (
-    <div>
-      <h3>{match.location.pathname}</h3>
-    </div>
+    <SlizaaTree />
   );
 }
 
