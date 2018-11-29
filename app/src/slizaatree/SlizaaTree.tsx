@@ -4,16 +4,20 @@ AntTreeNodeExpandedEvent} from "antd/lib/tree";
 import * as React from 'react';
 // import {HotKeys} from 'react-hotkeys';
 // import * as rm from 'typed-rest-client';
+import {SlizaaService} from "../model/SlizaaService";
 import './SlizaaTree.css';
 import { SlizaaTreeComponentModel } from './SlizaaTreeComponentModel';
 import { SlizaaTreeComponentNode } from './SlizaaTreeComponentNode';
 import { SlizaaTreeComponentProperties } from './SlizaaTreeComponentProperties';
 
+
 const TreeNode = Tree.TreeNode;
 
 export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, SlizaaTreeComponentModel> {
 
-  private slizaaTreeComponentModel : SlizaaTreeComponentModel; 
+  private slizaaTreeComponentModel : SlizaaTreeComponentModel;
+
+  private slizaaService : SlizaaService;
 
   // private keyMap = {
   //   moveDown: 'down',
@@ -33,6 +37,7 @@ export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, S
   constructor(props : SlizaaTreeComponentProperties) {
     super(props);
     this.slizaaTreeComponentModel = new SlizaaTreeComponentModel();
+    this.slizaaService = new SlizaaService();
   }
 
   public onExpand =  (expandedKeys: string[], info: AntTreeNodeExpandedEvent)  => {
@@ -41,7 +46,17 @@ export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, S
     return;
   }
 
-  public onClick = (e: React.MouseEvent<HTMLElement>, node: AntTreeNode) => { 
+  public onClick = (e: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
+
+      this.slizaaService.resolve(`{
+        node(id: "` + 28 + `") {
+          children {
+            id
+            text
+          }
+        }
+      }`);
+
 
     //  this.slizaaTreeComponentModel.focusedNode = node.props.dataRef;
     //  this.setState({
