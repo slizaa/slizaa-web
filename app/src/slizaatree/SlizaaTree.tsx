@@ -43,10 +43,10 @@ export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, S
 
   public onClick = (e: React.MouseEvent<HTMLElement>, node: AntTreeNode) => { 
 
-     this.slizaaTreeComponentModel.focusedNode = node.props.dataRef;
-     this.setState({
-      focusedNode: this.slizaaTreeComponentModel.focusedNode
-    });
+    //  this.slizaaTreeComponentModel.focusedNode = node.props.dataRef;
+    //  this.setState({
+    //   focusedNode: this.slizaaTreeComponentModel.focusedNode
+    // });
   }
 
   /**
