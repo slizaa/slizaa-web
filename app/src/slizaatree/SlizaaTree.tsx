@@ -1,23 +1,24 @@
 import { Tree } from 'antd';
-import { AntTreeNode, /*, AntTreeNodeSelectedEvent */ 
-AntTreeNodeExpandedEvent} from "antd/lib/tree";
+import { AntTreeNode, AntTreeNodeExpandedEvent} from "antd/lib/tree";
+import { ApolloClient } from 'apollo-client';
+import gql from 'graphql-tag';
 import * as React from 'react';
+import { withApollo } from "react-apollo";
 // import {HotKeys} from 'react-hotkeys';
 // import * as rm from 'typed-rest-client';
-import {SlizaaService} from "../model/SlizaaService";
 import './SlizaaTree.css';
 import { SlizaaTreeComponentModel } from './SlizaaTreeComponentModel';
 import { SlizaaTreeComponentNode } from './SlizaaTreeComponentNode';
-import { SlizaaTreeComponentProperties } from './SlizaaTreeComponentProperties';
+import { ISlizaaTreeComponentProperties } from './SlizaaTreeComponentProperties';
 
 
 const TreeNode = Tree.TreeNode;
 
-export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, SlizaaTreeComponentModel> {
+class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaTreeComponentModel> {
 
   private slizaaTreeComponentModel : SlizaaTreeComponentModel;
 
-  private slizaaService : SlizaaService;
+  private apolloClient : ApolloClient<any>;
 
   // private keyMap = {
   //   moveDown: 'down',
@@ -34,10 +35,13 @@ export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, S
   //   'moveUp': (event : any) => console.log(event)
   // };
 
-  constructor(props : SlizaaTreeComponentProperties) {
+  constructor(props : ISlizaaTreeComponentProperties) {
     super(props);
+
+    // tslint:disable-next-line:no-console
+    console.log(props.client);
+
     this.slizaaTreeComponentModel = new SlizaaTreeComponentModel();
-    this.slizaaService = new SlizaaService();
   }
 
   public onExpand =  (expandedKeys: string[], info: AntTreeNodeExpandedEvent)  => {
@@ -47,16 +51,6 @@ export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, S
   }
 
   public onClick = (e: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
-
-      this.slizaaService.resolve(`{
-        node(id: "` + 28 + `") {
-          children {
-            id
-            text
-          }
-        }
-      }`);
-
 
     //  this.slizaaTreeComponentModel.focusedNode = node.props.dataRef;
     //  this.setState({
@@ -76,6 +70,21 @@ export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, S
         resolve();
         return;
       }
+
+     
+      this.apolloClient.query({
+        query: gql`
+          query {
+            allTodos {
+              id
+              title
+            }
+          }
+        `,
+        variables: { breed: "bulldog" }
+      })
+       // tslint:disable-next-line:no-console
+      .then(result => console.log(result));
 
       const key: string = treeNode.props.dataRef.key;
     // tslint:disable-next-line:no-console
@@ -143,4 +152,4 @@ export class SlizaaTree extends React.Component<SlizaaTreeComponentProperties, S
   }
 }
 
-export default SlizaaTree;
+export default withApollo<{}, {}>(SlizaaTree);

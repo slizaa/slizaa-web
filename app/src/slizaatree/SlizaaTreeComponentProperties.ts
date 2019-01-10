@@ -1,6 +1,6 @@
-export class SlizaaTreeComponentProperties {
+import { ApolloClient } from 'apollo-client';
 
-    constructor() {
-        //
-    }
+export interface ISlizaaTreeComponentProperties {
+
+    client: ApolloClient<any>;
 }

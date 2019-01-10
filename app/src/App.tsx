@@ -4,8 +4,7 @@ import { Icon, Layout, Menu } from 'antd';
 import * as React from "react";
 import { Component } from "react";
 import { BrowserRouter, Link, Route, RouteComponentProps } from "react-router-dom";
-import { SlizaaTree } from './slizaatree/SlizaaTree';
-
+import SlizaaTree from './slizaatree/SlizaaTree'
 
 const { Header, Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
