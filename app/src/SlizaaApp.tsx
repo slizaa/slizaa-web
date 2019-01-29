@@ -11,7 +11,10 @@ import * as React from 'react';
 import SlizaaTree from './slizaatree/SlizaaTree';
 
 const httpLink = createHttpLink({
-  uri: 'https://mpjk0plp9.lp.gql.zone/graphql',
+  /* fetchOptions: {
+    mode: 'no-cors',
+  }, */
+  uri: 'http://localhost:8085/graphql/'
 });
 
 const client = new ApolloClient({

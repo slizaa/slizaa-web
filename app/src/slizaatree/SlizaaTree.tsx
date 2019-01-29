@@ -12,6 +12,17 @@ import { SlizaaTreeComponentNode } from './SlizaaTreeComponentNode';
 import { ISlizaaTreeComponentProperties } from './SlizaaTreeComponentProperties';
 
 
+// const childrenQuery = gql`
+// query children($id: ID!) {
+//   hierarchicalGraph(databaseIdentifier: "hurz", hierarchicalGraphIdentifier: "akjsdakjsdh") {
+//     node(id: $id) {
+//       id
+//       text 
+//     }
+//   }
+// }`;
+
+
 const TreeNode = Tree.TreeNode;
 
 class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaTreeComponentModel> {
@@ -39,7 +50,7 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
     super(props);
 
     // tslint:disable-next-line:no-console
-    console.log(props.client);
+    this.apolloClient = props.client;
 
     this.slizaaTreeComponentModel = new SlizaaTreeComponentModel();
   }
@@ -71,24 +82,27 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
         return;
       }
 
+      const key: string = treeNode.props.dataRef.key;
+      // tslint:disable-next-line:no-console
+      console.log("Dies ist der Key: " + key);
      
       this.apolloClient.query({
         query: gql`
-          query {
-            allTodos {
+        {
+          hierarchicalGraph(databaseIdentifier: "hurz", hierarchicalGraphIdentifier: "akjsdakjsdh") {
+            node(id: "6546") {
               id
-              title
+              text 
             }
           }
-        `,
-        variables: { breed: "bulldog" }
+        }`
       })
        // tslint:disable-next-line:no-console
-      .then(result => console.log(result));
+      .then(result => console.log(result))
+      // tslint:disable-next-line:no-console
+      .catch(reason => console.log(reason));
 
-      const key: string = treeNode.props.dataRef.key;
-    // tslint:disable-next-line:no-console
-    console.log(key);
+
 
 
       // const queryString: string = (key === '-1') ? 'http://localhost:8080/rest/root' : 'http://localhost:8080/rest/node/' + key + '?resolveChildren=true';
