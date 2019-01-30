@@ -11,17 +11,18 @@ import { SlizaaTreeComponentModel } from './SlizaaTreeComponentModel';
 import { SlizaaTreeComponentNode } from './SlizaaTreeComponentNode';
 import { ISlizaaTreeComponentProperties } from './SlizaaTreeComponentProperties';
 
-
-// const childrenQuery = gql`
-// query children($id: ID!) {
-//   hierarchicalGraph(databaseIdentifier: "hurz", hierarchicalGraphIdentifier: "akjsdakjsdh") {
-//     node(id: $id) {
-//       id
-//       text 
-//     }
-//   }
-// }`;
-
+const nodeChildrenQuery = gql`
+query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
+  hierarchicalGraph(databaseIdentifier: $databaseId, hierarchicalGraphIdentifier: $hierarchicalGraphId) {
+    node(id: $nodeId) {
+      id
+      children {
+        id
+        text
+      } 
+    }
+  }
+}`
 
 const TreeNode = Tree.TreeNode;
 
@@ -85,17 +86,13 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
       const key: string = treeNode.props.dataRef.key;
       // tslint:disable-next-line:no-console
       console.log("Dies ist der Key: " + key);
-     
+
       this.apolloClient.query({
-        query: gql`
-        {
-          hierarchicalGraph(databaseIdentifier: "hurz", hierarchicalGraphIdentifier: "akjsdakjsdh") {
-            node(id: "6546") {
-              id
-              text 
-            }
-          }
-        }`
+        query: nodeChildrenQuery,
+        variables: {
+          databaseId: "test", 
+          hierarchicalGraphId: "01",
+          nodeId: 4188 }
       })
        // tslint:disable-next-line:no-console
       .then(result => console.log(result))
@@ -132,7 +129,7 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
       if (item.children) {
         return (
           <TreeNode
-            title={item.title}
+            title={<span>'Hurz ' + item.title</span>}
             key={item.key} 
             dataRef={item}
             className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''}
@@ -142,7 +139,7 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
         );
       }
       // tslint:disable-next-line:jsx-key
-      return <TreeNode title={item.title} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
+      return <TreeNode title={'Purz ' + item.title} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
     });
   }
   
