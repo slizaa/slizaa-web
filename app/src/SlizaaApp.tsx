@@ -5,8 +5,6 @@ import { createHttpLink } from 'apollo-link-http';
 
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
-import { NodeIcon } from './NodeIcon';
-
 import * as React from 'react';
 import SlizaaTree from './slizaatree/SlizaaTree';
 
@@ -25,17 +23,21 @@ const client = new ApolloClient({
 export const WrappedApp = () => (
   <ApolloProvider client={client}>
 
-    <React.Fragment>
+<SlizaaTree />
 
-
-      <SlizaaTree />
-
-      <NodeIcon
-        centerImageSrc="http://localhost:8085/static/icons/class_obj.png"
-        topLeftImageSrc="http://localhost:8085/static/icons/default_tsk.png"
-        topRightImageSrc="http://localhost:8085/static/icons/default_tsk.png"
-        bottomRightImageSrc="http://localhost:8085/static/icons/default_tsk.png" />
-
-    </React.Fragment>
   </ApolloProvider>
 );
+
+
+{/* <React.Fragment>
+
+
+      
+
+<NodeIcon
+  centerImageSrc="http://localhost:8085/static/icons/class_obj.png"
+  topLeftImageSrc="http://localhost:8085/static/icons/default_tsk.png"
+  topRightImageSrc="http://localhost:8085/static/icons/default_tsk.png"
+  bottomRightImageSrc="http://localhost:8085/static/icons/default_tsk.png" />
+
+</React.Fragment> */}
