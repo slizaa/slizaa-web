@@ -1,6 +1,6 @@
 import { Tree } from 'antd';
 import { Icon } from 'antd';
-import { AntTreeNode, AntTreeNodeExpandedEvent } from "antd/lib/tree";
+import { AntTreeNode, AntTreeNodeExpandedEvent, AntTreeNodeSelectedEvent } from "antd/lib/tree";
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import * as React from 'react';
@@ -20,6 +20,7 @@ query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
       children {
         id
         text
+        hasChildren
       } 
     }
   }
@@ -28,6 +29,7 @@ query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
 interface IResultNode {
   id: string;
   text: string;
+  hasChildren:  boolean;
 }
 
 interface IResult {
@@ -82,6 +84,16 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
     // });
   }
 
+  public onSelect =  (selectedKeys: string[], e: AntTreeNodeSelectedEvent) : void => {
+       // tslint:disable-next-line:no-console
+       console.log(selectedKeys + " : " + e);
+    //  this.slizaaTreeComponentModel.focusedNode = node.props.dataRef;
+    //  this.setState({
+    //   focusedNode: this.slizaaTreeComponentModel.focusedNode
+    // });
+  }
+
+
   /**
    * 
    */
@@ -96,27 +108,23 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
       }
 
       const key: string = treeNode.props.dataRef.key;
-      // tslint:disable-next-line:no-console
-      console.log("Dies ist der Key: " + key);
 
       this.apolloClient.query({
         query: nodeChildrenQuery,
         variables: {
-          databaseId: "test",
-          hierarchicalGraphId: "01",
-          nodeId: 32
+          databaseId: "hurz",
+          hierarchicalGraphId: "akjsdakjsdh",
+          nodeId: key
         }
       })
         .then(result => {
-          // tslint:disable-next-line:no-console
-          console.log((result.data as IResult).hierarchicalGraph.node.children);
 
           const resultChildren: IResultNode[] = (result.data as IResult).hierarchicalGraph.node.children;
 
           treeNode.props.dataRef.children = new Array(resultChildren.length);
 
           for (let i = 0; i < resultChildren.length; i++) {
-            treeNode.props.dataRef.children[i] = { title: resultChildren[i].text, key: resultChildren[i].id, parent: treeNode.props.dataRef };
+            treeNode.props.dataRef.children[i] = { title: resultChildren[i].text, key: resultChildren[i].id, parent: treeNode.props.dataRef, hasChildren: resultChildren[i].hasChildren };
           }
 
           this.setState({
@@ -125,8 +133,11 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
 
           resolve();
         })
-        // tslint:disable-next-line:no-console
-        .catch(reason => console.log(reason));
+        .catch(reason => {
+          // tslint:disable-next-line:no-console
+          console.log(reason);
+          reject();
+        });
 
 
 
@@ -151,7 +162,7 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
         return (
           <TreeNode
             icon={<HeartIcon />}
-            title={<span>'Hurz ' + item.title</span>}
+            title={item.title}
             key={item.key}
             dataRef={item}
             className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''}
@@ -161,7 +172,7 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
         );
       }
       // tslint:disable-next-line:jsx-key
-      return <TreeNode icon={<PandaIcon />} title={'Purz ' + item.title} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
+      return <TreeNode icon={<PandaIcon />} isLeaf={!item.hasChildren} title={item.title} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
     });
   }
 
@@ -173,11 +184,14 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
       // <HotKeys keyMap={this.keyMap} handlers={this.handlers}>
       <Tree
         multiple={false}
-        selectable={false}
+        selectable={true}
         loadData={this.onLoadData}
         onClick={this.onClick}
+        onSelect={this.onSelect}
         onExpand={this.onExpand}
         showIcon={true}
+        showLine={true}
+        className="hide-file-icon"
       >
         {this.renderTreeNodes(this.slizaaTreeComponentModel.rootNodes)}
       </Tree>
@@ -209,7 +223,12 @@ const PandaSvg = () => (
 
 const HeartSvg = () => (
   <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
-    <path d="M923 283.6c-13.4-31.1-32.6-58.9-56.9-82.8-24.3-23.8-52.5-42.4-84-55.5-32.5-13.5-66.9-20.3-102.4-20.3-49.3 0-97.4 13.5-139.2 39-10 6.1-19.5 12.8-28.5 20.1-9-7.3-18.5-14-28.5-20.1-41.8-25.5-89.9-39-139.2-39-35.5 0-69.9 6.8-102.4 20.3-31.4 13-59.7 31.7-84 55.5-24.4 23.9-43.5 51.7-56.9 82.8-13.9 32.3-21 66.6-21 101.9 0 33.3 6.8 68 20.3 103.3 11.3 29.5 27.5 60.1 48.2 91 32.8 48.9 77.9 99.9 133.9 151.6 92.8 85.7 184.7 144.9 188.6 147.3l23.7 15.2c10.5 6.7 24 6.7 34.5 0l23.7-15.2c3.9-2.5 95.7-61.6 188.6-147.3 56-51.7 101.1-102.7 133.9-151.6 20.7-30.9 37-61.5 48.2-91 13.5-35.3 20.3-70 20.3-103.3 0.1-35.3-7-69.6-20.9-101.9z" />
+<path fill="#B85819" d="M511.777,0C229.473,0,0.603,228.883,0.603,511.188c0,282.339,228.871,511.212,511.175,511.212
+	c282.332,0,511.199-228.873,511.199-511.212C1022.977,228.883,794.109,0,511.777,0z M567.533,728.251
+	c45.053,0,95.021-9.802,124.421-21.568l22.539,116.595c-27.43,13.737-89.165,28.425-169.504,28.425
+	c-228.296,0-345.886-142.074-345.886-330.206c0-225.366,160.702-350.784,360.574-350.784c77.418,0,136.188,15.683,162.643,29.397
+	l-30.365,118.563c-30.375-12.742-72.512-24.499-125.421-24.499c-118.538,0-210.644,71.524-210.644,218.497
+	C355.89,644.947,434.258,728.251,567.533,728.251z"/>
   </svg>
 );
 
