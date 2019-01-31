@@ -1,6 +1,6 @@
 import { Tree } from 'antd';
 import { Icon } from 'antd';
-import { AntTreeNode, AntTreeNodeExpandedEvent} from "antd/lib/tree";
+import { AntTreeNode, AntTreeNodeExpandedEvent } from "antd/lib/tree";
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import * as React from 'react';
@@ -25,13 +25,15 @@ query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
   }
 }`
 
+interface IResultNode {
+  id: string;
+  text: string;
+}
+
 interface IResult {
   hierarchicalGraph: {
     node: {
-      children: {
-        id: string;
-        text: string;
-      }
+      children: [IResultNode]
     }
   }
 }
@@ -40,15 +42,15 @@ const TreeNode = Tree.TreeNode;
 
 class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaTreeComponentModel> {
 
-  private slizaaTreeComponentModel : SlizaaTreeComponentModel;
+  private slizaaTreeComponentModel: SlizaaTreeComponentModel;
 
-  private apolloClient : ApolloClient<any>;
+  private apolloClient: ApolloClient<any>;
 
   // private keyMap = {
   //   moveDown: 'down',
   //   moveUp: 'up'
   // }
-  
+
   // private handlers = {
   //   'moveDown': (event : any) => {
   //     this.slizaaTreeComponentModel.focusedNode = this.slizaaTreeComponentModel.rootNodes[0];
@@ -59,7 +61,7 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
   //   'moveUp': (event : any) => console.log(event)
   // };
 
-  constructor(props : ISlizaaTreeComponentProperties) {
+  constructor(props: ISlizaaTreeComponentProperties) {
     super(props);
 
     // tslint:disable-next-line:no-console
@@ -68,10 +70,8 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
     this.slizaaTreeComponentModel = new SlizaaTreeComponentModel();
   }
 
-  public onExpand =  (expandedKeys: string[], info: AntTreeNodeExpandedEvent)  => {
-    // tslint:disable-next-line:no-console
-    console.log(info.node.props.dataRef);
-    return;
+  public onExpand = (expandedKeys: string[], info: AntTreeNodeExpandedEvent) => {
+    // empty block
   }
 
   public onClick = (e: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
@@ -86,11 +86,11 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
    * 
    */
   public onLoadData = (treeNode: AntTreeNode) => {
-    
+
     return new Promise(async (resolve, reject) => {
 
       // return if children already have been resolved
-      if (treeNode.props.children) {
+      if (treeNode.props.dataRef.children) {
         resolve();
         return;
       }
@@ -102,14 +102,31 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
       this.apolloClient.query({
         query: nodeChildrenQuery,
         variables: {
-          databaseId: "hurz", 
-          hierarchicalGraphId: "akjsdakjsdh",
-          nodeId: 32 }
+          databaseId: "test",
+          hierarchicalGraphId: "01",
+          nodeId: 32
+        }
       })
-       // tslint:disable-next-line:no-console
-      .then(result => console.log((result.data as IResult).hierarchicalGraph.node.children))
-      // tslint:disable-next-line:no-console
-      .catch(reason => console.log(reason));
+        .then(result => {
+          // tslint:disable-next-line:no-console
+          console.log((result.data as IResult).hierarchicalGraph.node.children);
+
+          const resultChildren: IResultNode[] = (result.data as IResult).hierarchicalGraph.node.children;
+
+          treeNode.props.dataRef.children = new Array(resultChildren.length);
+
+          for (let i = 0; i < resultChildren.length; i++) {
+            treeNode.props.dataRef.children[i] = { title: resultChildren[i].text, key: resultChildren[i].id, parent: treeNode.props.dataRef };
+          }
+
+          this.setState({
+            rootNodes: [...this.slizaaTreeComponentModel.rootNodes]
+          });
+
+          resolve();
+        })
+        // tslint:disable-next-line:no-console
+        .catch(reason => console.log(reason));
 
 
 
@@ -118,18 +135,10 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
       // const restRes: rm.IRestResponse<any> = await new rm.RestClient("hurz").get<any>(queryString);
       // if (restRes.statusCode === 200 && restRes.result.children) {
 
-      //   treeNode.props.dataRef.children = new Array(restRes.result.children.length);
 
-      //   for (let i = 0; i < restRes.result.children.length; i++) {
-      //     treeNode.props.dataRef.children[i] = { title: restRes.result.children[i].label, key: restRes.result.children[i].id, parent: treeNode.props.dataRef};
-      //   }
-
-      //   this.setState({
-      //     rootNodes: [...this.slizaaTreeComponentModel.rootNodes]
-      //   });
 
       // }
-      resolve();
+      // resolve();
     });
   }
 
@@ -141,37 +150,37 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
       if (item.children) {
         return (
           <TreeNode
-            icon={<HeartIcon/>}
+            icon={<HeartIcon />}
             title={<span>'Hurz ' + item.title</span>}
-            key={item.key} 
+            key={item.key}
             dataRef={item}
             className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''}
-            >
+          >
             {this.renderTreeNodes(item.children)}
           </TreeNode>
         );
       }
       // tslint:disable-next-line:jsx-key
-      return <TreeNode icon={<PandaIcon/>} title={'Purz ' + item.title} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
+      return <TreeNode icon={<PandaIcon />} title={'Purz ' + item.title} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
     });
   }
-  
+
   /**
    * 
    */
   public render() {
     return (
       // <HotKeys keyMap={this.keyMap} handlers={this.handlers}>
-        <Tree
-          multiple={false}
-          selectable={false}
-          loadData={this.onLoadData}
-          onClick={this.onClick}
-          onExpand={this.onExpand}
-          showIcon={true}
-        >
-          {this.renderTreeNodes( this.slizaaTreeComponentModel.rootNodes )}
-        </Tree>
+      <Tree
+        multiple={false}
+        selectable={false}
+        loadData={this.onLoadData}
+        onClick={this.onClick}
+        onExpand={this.onExpand}
+        showIcon={true}
+      >
+        {this.renderTreeNodes(this.slizaaTreeComponentModel.rootNodes)}
+      </Tree>
       // </HotKeys>
     );
   }
