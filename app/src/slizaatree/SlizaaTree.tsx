@@ -10,7 +10,14 @@ import { withApollo } from "react-apollo";
 import './SlizaaTree.css';
 import { SlizaaTreeComponentModel } from './SlizaaTreeComponentModel';
 import { SlizaaTreeComponentNode } from './SlizaaTreeComponentNode';
-import { ISlizaaTreeComponentProperties } from './SlizaaTreeComponentProperties';
+export interface ISlizaaTreeComponentProperties {
+
+  client: ApolloClient<any>;
+
+  databaseId: string;
+
+  hierarchicalGraphId: string;
+}
 
 const nodeChildrenQuery = gql`
 query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
@@ -42,11 +49,15 @@ interface IResult {
 
 const TreeNode = Tree.TreeNode;
 
-class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaTreeComponentModel> {
+export class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaTreeComponentModel> {
 
   private slizaaTreeComponentModel: SlizaaTreeComponentModel;
 
   private apolloClient: ApolloClient<any>;
+
+  private databaseId: string;
+
+  private hierarchicalGraphId: string;
 
   // private keyMap = {
   //   moveDown: 'down',
@@ -66,8 +77,9 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
   constructor(props: ISlizaaTreeComponentProperties) {
     super(props);
 
-    // tslint:disable-next-line:no-console
     this.apolloClient = props.client;
+    this.databaseId = props.databaseId;
+    this.hierarchicalGraphId = props.hierarchicalGraphId;
 
     this.slizaaTreeComponentModel = new SlizaaTreeComponentModel();
   }
@@ -93,10 +105,6 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
     // });
   }
 
-
-  /**
-   * 
-   */
   public onLoadData = (treeNode: AntTreeNode) => {
 
     return new Promise(async (resolve, reject) => {
@@ -112,8 +120,8 @@ class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaT
       this.apolloClient.query({
         query: nodeChildrenQuery,
         variables: {
-          databaseId: "hurz",
-          hierarchicalGraphId: "akjsdakjsdh",
+          databaseId: this.databaseId,
+          hierarchicalGraphId: this.hierarchicalGraphId,
           nodeId: key
         }
       })
@@ -233,4 +241,4 @@ const HeartSvg = () => (
 );
 
 
-export default withApollo<{}, {}>(SlizaaTree);
+export default withApollo<ISlizaaTreeComponentProperties, {}>(SlizaaTree);

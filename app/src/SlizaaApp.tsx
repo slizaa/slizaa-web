@@ -23,7 +23,7 @@ const client = new ApolloClient({
 export const WrappedApp = () => (
   <ApolloProvider client={client}>
 
-<SlizaaTree />
+    <SlizaaTree client={client} databaseId="test" hierarchicalGraphId="01"/>
 
   </ApolloProvider>
 );
