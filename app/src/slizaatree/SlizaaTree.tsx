@@ -4,20 +4,11 @@ import { AntTreeNode, AntTreeNodeExpandedEvent, AntTreeNodeSelectedEvent } from 
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import * as React from 'react';
-import { withApollo } from "react-apollo";
-// import {HotKeys} from 'react-hotkeys';
-// import * as rm from 'typed-rest-client';
 import './SlizaaTree.css';
 import { SlizaaTreeComponentModel } from './SlizaaTreeComponentModel';
 import { SlizaaTreeComponentNode } from './SlizaaTreeComponentNode';
-export interface ISlizaaTreeComponentProperties {
-
-  client: ApolloClient<any>;
-
-  databaseId: string;
-
-  hierarchicalGraphId: string;
-}
+import { ISlizaaTreeComponentProperties } from './ISlizaaTreeComponentProperties';
+import { WithApolloClient } from 'react-apollo';
 
 const nodeChildrenQuery = gql`
 query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
@@ -49,7 +40,7 @@ interface IResult {
 
 const TreeNode = Tree.TreeNode;
 
-export class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, SlizaaTreeComponentModel> {
+export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComponentProperties>, SlizaaTreeComponentModel> {
 
   private slizaaTreeComponentModel: SlizaaTreeComponentModel;
 
@@ -59,22 +50,7 @@ export class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, 
 
   private hierarchicalGraphId: string;
 
-  // private keyMap = {
-  //   moveDown: 'down',
-  //   moveUp: 'up'
-  // }
-
-  // private handlers = {
-  //   'moveDown': (event : any) => {
-  //     this.slizaaTreeComponentModel.focusedNode = this.slizaaTreeComponentModel.rootNodes[0];
-  //     this.setState({
-  //       focusedNode: this.slizaaTreeComponentModel.focusedNode
-  //     });
-  //   },
-  //   'moveUp': (event : any) => console.log(event)
-  // };
-
-  constructor(props: ISlizaaTreeComponentProperties) {
+  constructor(props: WithApolloClient<ISlizaaTreeComponentProperties>) {
     super(props);
 
     this.apolloClient = props.client;
@@ -89,7 +65,6 @@ export class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, 
   }
 
   public onClick = (e: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
-
     //  this.slizaaTreeComponentModel.focusedNode = node.props.dataRef;
     //  this.setState({
     //   focusedNode: this.slizaaTreeComponentModel.focusedNode
@@ -146,30 +121,15 @@ export class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, 
           console.log(reason);
           reject();
         });
-
-
-
-
-      // const queryString: string = (key === '-1') ? 'http://localhost:8080/rest/root' : 'http://localhost:8080/rest/node/' + key + '?resolveChildren=true';
-      // const restRes: rm.IRestResponse<any> = await new rm.RestClient("hurz").get<any>(queryString);
-      // if (restRes.statusCode === 200 && restRes.result.children) {
-
-
-
-      // }
-      // resolve();
     });
   }
 
-  /**
-   * 
-   */
   public renderTreeNodes = (treeNodes: SlizaaTreeComponentNode[]) => {
     return treeNodes.map((item: SlizaaTreeComponentNode) => {
       if (item.children) {
         return (
           <TreeNode
-            icon={<HeartIcon />}
+            icon={<PandaIcon />}
             title={item.title}
             key={item.key}
             dataRef={item}
@@ -184,12 +144,8 @@ export class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, 
     });
   }
 
-  /**
-   * 
-   */
   public render() {
     return (
-      // <HotKeys keyMap={this.keyMap} handlers={this.handlers}>
       <Tree
         multiple={false}
         selectable={true}
@@ -203,7 +159,6 @@ export class SlizaaTree extends React.Component<ISlizaaTreeComponentProperties, 
       >
         {this.renderTreeNodes(this.slizaaTreeComponentModel.rootNodes)}
       </Tree>
-      // </HotKeys>
     );
   }
 }
@@ -212,9 +167,9 @@ const PandaIcon = (props: any) => (
   <Icon component={PandaSvg} {...props} />
 );
 
-const HeartIcon = (props: any) => (
-  <Icon component={HeartSvg} {...props} />
-);
+// const HeartIcon = (props: any) => (
+//   <Icon component={HeartSvg} {...props} />
+// );
 
 const PandaSvg = () => (
   <svg viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor">
@@ -229,16 +184,16 @@ const PandaSvg = () => (
   </svg>
 );
 
-const HeartSvg = () => (
-  <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
-<path fill="#B85819" d="M511.777,0C229.473,0,0.603,228.883,0.603,511.188c0,282.339,228.871,511.212,511.175,511.212
-	c282.332,0,511.199-228.873,511.199-511.212C1022.977,228.883,794.109,0,511.777,0z M567.533,728.251
-	c45.053,0,95.021-9.802,124.421-21.568l22.539,116.595c-27.43,13.737-89.165,28.425-169.504,28.425
-	c-228.296,0-345.886-142.074-345.886-330.206c0-225.366,160.702-350.784,360.574-350.784c77.418,0,136.188,15.683,162.643,29.397
-	l-30.365,118.563c-30.375-12.742-72.512-24.499-125.421-24.499c-118.538,0-210.644,71.524-210.644,218.497
-	C355.89,644.947,434.258,728.251,567.533,728.251z"/>
-  </svg>
-);
+// const HeartSvg = () => (
+//   <svg width="1em" height="1em" fill="currentColor" viewBox="0 0 1024 1024">
+// <path fill="#B85819" d="M511.777,0C229.473,0,0.603,228.883,0.603,511.188c0,282.339,228.871,511.212,511.175,511.212
+// 	c282.332,0,511.199-228.873,511.199-511.212C1022.977,228.883,794.109,0,511.777,0z M567.533,728.251
+// 	c45.053,0,95.021-9.802,124.421-21.568l22.539,116.595c-27.43,13.737-89.165,28.425-169.504,28.425
+// 	c-228.296,0-345.886-142.074-345.886-330.206c0-225.366,160.702-350.784,360.574-350.784c77.418,0,136.188,15.683,162.643,29.397
+// 	l-30.365,118.563c-30.375-12.742-72.512-24.499-125.421-24.499c-118.538,0-210.644,71.524-210.644,218.497
+// 	C355.89,644.947,434.258,728.251,567.533,728.251z"/>
+//   </svg>
+// );
 
 
-export default withApollo<ISlizaaTreeComponentProperties, {}>(SlizaaTree);
+export default SlizaaTree;
