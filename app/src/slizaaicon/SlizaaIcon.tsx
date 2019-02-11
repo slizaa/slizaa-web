@@ -11,6 +11,8 @@ const GET_SVG = gql`
   }
 `;
 
+const svgCache = new Map();
+
 export class SlizaaIcon extends React.Component<ISlizaaIconProperties, any> {
 
     constructor(props: WithApolloClient<ISlizaaIconProperties>) {
@@ -18,18 +20,26 @@ export class SlizaaIcon extends React.Component<ISlizaaIconProperties, any> {
     }
 
     public render() {
+
+        // return the cached instance if exist
+        if (svgCache.has(this.props.iconId)) {
+            // tslint:disable-next-line:jsx-no-lambda
+            return <Icon component={() => <div dangerouslySetInnerHTML={createMarkup(svgCache.get(this.props.iconId))} />} />
+        }
+
         return (
             <Query query={GET_SVG} variables={{ identifier: this.props.iconId }}>
                 {({ loading, error, data }) => {
                     if (loading) { return <Icon component={PandaSvg} />; }
                     if (error) { return <Icon component={PandaSvg} /> }
                     if (data.svg) {
+                        svgCache.set(this.props.iconId, data.svg);
                         // tslint:disable-next-line:jsx-no-lambda
                         return <Icon component={() => <div dangerouslySetInnerHTML={createMarkup(data.svg)} />} />
                     } else {
-                        return<Icon component={PandaSvg} />
+                        return <Icon component={PandaSvg} />
                     }
-   
+
                 }}
             </Query>
         );
@@ -37,8 +47,8 @@ export class SlizaaIcon extends React.Component<ISlizaaIconProperties, any> {
 }
 
 function createMarkup(svg: string) {
-    return {__html: svg};
-  }
+    return { __html: svg };
+}
 
 const PandaSvg = () => (
     <svg viewBox="0 0 1024 1024" width="1em" height="1em" fill="currentColor">

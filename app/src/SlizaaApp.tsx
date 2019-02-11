@@ -21,7 +21,7 @@ export const WrappedApp = () => (
   <ApolloProvider client={client}>
 
     <ApolloConsumer>
-      { cl => <SlizaaTree client={cl} databaseId="hurz" hierarchicalGraphId="akjsdakjsdh" /> }
+      { cl => <SlizaaTree client={cl} databaseId="test" hierarchicalGraphId="01" /> }
     </ApolloConsumer>
 
   </ApolloProvider>
