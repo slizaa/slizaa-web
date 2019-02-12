@@ -9,6 +9,7 @@ import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider, ApolloConsumer } from 'react-apollo';
 import SlizaaTree from './slizaatree/SlizaaTree';
+import BarChart from './d3ex/BarChart';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:8085/graphql/'
@@ -34,12 +35,12 @@ class App extends Component {
         <BrowserRouter>
           <Layout style={{ minHeight: '100vh' }}>
             <Sider
-              theme="dark"
+              theme="light"
               collapsible={true}
               collapsed={this.state.collapsed}
               onCollapse={this.onCollapse}>
               <div className="logo" />
-              <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+              <Menu defaultSelectedKeys={['1']} mode="inline">
                 <Menu.Item key="1">
                   <Icon type="pie-chart" />
                   <span>Deshboard</span>
@@ -92,7 +93,7 @@ class App extends Component {
 
 function Dummy(match: RouteComponentProps<any>): any {
   return (
-    <h1>test</h1>
+    <BarChart data={[1,2,3]} height={50} width={50}/>
   );
 }
 
