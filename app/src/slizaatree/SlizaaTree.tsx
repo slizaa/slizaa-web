@@ -132,7 +132,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
         return (
           <TreeNode
             icon={<SlizaaIcon iconId={item.iconId} />}
-            title={item.title}
+            title={this.trim(item.title)}
             key={item.key}
             dataRef={item}
             className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''}
@@ -142,7 +142,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
         );
       }
       // tslint:disable-next-line:jsx-key
-      return <TreeNode icon={<SlizaaIcon iconId={item.iconId} />} isLeaf={!item.hasChildren} title={item.title} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
+      return <TreeNode icon={<SlizaaIcon iconId={item.iconId} />} isLeaf={!item.hasChildren} title={this.trim(item.title)} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
     });
   }
 
@@ -161,6 +161,15 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
         {this.renderTreeNodes(this.slizaaTreeComponentModel.rootNodes)}
       </Tree>
     );
+  }
+
+  private trim(value: string) : string {
+
+    /*if (value.length > 25) {
+      return value.substring(0, 23) + "...";
+    }*/
+
+    return value;
   }
 }
 

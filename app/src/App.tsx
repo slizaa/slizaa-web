@@ -1,6 +1,6 @@
 import './App.css';
 
-import { Icon, Layout, Menu } from 'antd';
+import { Icon, Layout, Menu, Row, Col } from 'antd';
 import * as React from "react";
 import { Component } from "react";
 import { BrowserRouter, Link, Route, RouteComponentProps } from "react-router-dom";
@@ -93,7 +93,7 @@ class App extends Component {
 
 function Dummy(match: RouteComponentProps<any>): any {
   return (
-    <BarChart data={[1,2,3]} height={50} width={50}/>
+    <BarChart data={[1, 2, 3]} height={500} width={500} />
   );
 }
 
@@ -101,7 +101,16 @@ export const ApolloSlizaaTree = () => (
   <ApolloProvider client={client}>
 
     <ApolloConsumer>
-      { cl => <SlizaaTree client={cl} databaseId="test" hierarchicalGraphId="01" /> }
+      {cl =>
+        <div>
+          <Row>
+            <Col span={6} >
+              <SlizaaTree client={cl} databaseId="test" hierarchicalGraphId="01" />
+            </Col>
+            <Col span={18} >col-6 col-pull-18</Col>
+          </Row>
+        </div>
+      }
     </ApolloConsumer>
 
   </ApolloProvider>

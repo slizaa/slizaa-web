@@ -52,7 +52,7 @@ function createMarkup(svg: string) {
 
 const PandaSvg = () => (
     <svg viewBox="0 0 1000 1000" width="18px" height="18px" fill="currentColor">
-        <path fill="#5B86C0" stroke="#000000" stroke-width="30" stroke-miterlimit="10" d="M250.5,188.833V821.5h0.022
+        <path fill="#5B86C0" stroke="#000000" stroke-width="30" strokeMiterlimit="10" d="M250.5,188.833V821.5h0.022
 	c0.963,51.238,112.728,92.666,250.478,92.666c137.752,0,249.516-41.428,250.479-92.666h0.021V188.833H250.5z"/>
 <ellipse fill="#7A9FCF" stroke="#000000" stroke-width="30" stroke-miterlimit="10" cx="501" cy="180.5" rx="250.5" ry="93.333"/>
     </svg>
