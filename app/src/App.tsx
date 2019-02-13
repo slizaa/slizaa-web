@@ -1,15 +1,15 @@
 import './App.css';
 
-import { Icon, Layout, Menu, Row, Col } from 'antd';
+import { Icon, Layout, Menu } from 'antd';
 import * as React from "react";
 import { Component } from "react";
 import { BrowserRouter, Link, Route, RouteComponentProps } from "react-router-dom";
 import { createHttpLink } from 'apollo-link-http';
 import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloProvider, ApolloConsumer } from 'react-apollo';
-import SlizaaTree from './slizaatree/SlizaaTree';
+import { ApolloProvider} from 'react-apollo';
 import BarChart from './d3ex/BarChart';
+import { ViewDsm } from './view-dsm/ViewDsm';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:8085/graphql/'
@@ -73,7 +73,7 @@ class App extends Component {
             </Sider>
             <Layout>
               <Content style={{ margin: 8, padding: 8, background: '#fff', minHeight: 280 }}>
-                <Route exact={true} path="/" component={ApolloSlizaaTree} />
+                <Route exact={true} path="/" component={ViewDsm} />
                 <Route path="/meseros" component={Dummy} />
                 <Route path="/spunkie" component={Dummy} />
                 <Route path="/punkie" component={Dummy} />
@@ -96,24 +96,5 @@ function Dummy(match: RouteComponentProps<any>): any {
     <BarChart data={[1, 2, 3]} height={500} width={500} />
   );
 }
-
-export const ApolloSlizaaTree = () => (
-  <ApolloProvider client={client}>
-
-    <ApolloConsumer>
-      {cl =>
-        <div>
-          <Row>
-            <Col span={6} >
-              <SlizaaTree client={cl} databaseId="test" hierarchicalGraphId="01" />
-            </Col>
-            <Col span={18} >col-6 col-pull-18</Col>
-          </Row>
-        </div>
-      }
-    </ApolloConsumer>
-
-  </ApolloProvider>
-);
 
 export default App;

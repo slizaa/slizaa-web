@@ -32,13 +32,11 @@ export default class BarChart extends React.Component<Props> {
   private drawChart(data: number[]) {
     const svg = select(this.svgRef!);
 
-    const dataArray = [10,20,16,2,8];
-
-    svg.append("g").selectAll("text").data(dataArray).enter()
+    svg.append("g").selectAll("text").data(this.props.data).enter()
     .append("text").text((d,i)=>`${i+1}: ${d}`)
       .attr("x",(d,i)=>(100+i*50)).attr("dx",-10)
       .attr("y",90).attr("dy",(d,i)=>-d);
-   svg.append("g").selectAll("circle").data(dataArray).enter()
+   svg.append("g").selectAll("circle").data(this.props.data).enter()
     .append("circle")
       .attr("cx",(d,i)=>(100+i*50))
       .attr("cy",100)

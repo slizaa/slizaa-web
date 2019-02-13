@@ -1,6 +1,6 @@
 import { Tree } from 'antd';
 import { SlizaaIcon } from '../slizaaicon/SlizaaIcon';
-import { AntTreeNode, AntTreeNodeExpandedEvent, AntTreeNodeSelectedEvent } from "antd/lib/tree";
+import { AntTreeNode, AntTreeNodeExpandedEvent } from "antd/lib/tree";
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import * as React from 'react';
@@ -67,15 +67,6 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
   }
 
   public onClick = (e: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
-    //  this.slizaaTreeComponentModel.focusedNode = node.props.dataRef;
-    //  this.setState({
-    //   focusedNode: this.slizaaTreeComponentModel.focusedNode
-    // });
-  }
-
-  public onSelect = (selectedKeys: string[], e: AntTreeNodeSelectedEvent): void => {
-    // tslint:disable-next-line:no-console
-    console.log(selectedKeys + " : " + e);
     //  this.slizaaTreeComponentModel.focusedNode = node.props.dataRef;
     //  this.setState({
     //   focusedNode: this.slizaaTreeComponentModel.focusedNode
@@ -153,7 +144,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
         selectable={true}
         loadData={this.onLoadData}
         onClick={this.onClick}
-        onSelect={this.onSelect}
+        onSelect={this.props.onSelect}
         onExpand={this.onExpand}
         showIcon={true}
         showLine={false}
