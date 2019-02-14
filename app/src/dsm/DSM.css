@@ -1,0 +1,26 @@
+.grid {
+    stroke: #9A8B7A;
+    stroke-width: 1px;
+    fill: #CF7D1C;
+  }
+
+  .arc {
+    stroke: #9A8B7A;
+    fill: none;
+  }
+  
+  .node {
+    fill: #EBD8C1;
+    stroke: #9A8B7A;
+    stroke-width: 1px;
+  }
+  
+text {
+    text-anchor: end;
+    font-size: 12px;
+    font-family: sans-serif;
+    font-feature-settings: 'tnum';
+    font-variant: tabular-nums;
+    line-height: 1.5;
+    fill: rgba(0, 0, 0, 0.65);
+  }

@@ -2,6 +2,7 @@ li.slizaa-focus > span.ant-tree-node-content-wrapper {
   background-color: red;
 }
 
-.ant-tree {
+.slizaa-tree {
   font-size: 12px;
+  overflow: hidden;
 }

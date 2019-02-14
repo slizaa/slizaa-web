@@ -1,5 +1,9 @@
 @import '~antd/dist/antd.css';
 
+.ant-menu-vertical, .ant-menu-vertical-left {
+  border-right: none;
+}
+
 .logo {
     height: 32px;
     background: rgba(255,255,255,.2);

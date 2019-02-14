@@ -126,7 +126,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
             title={this.trim(item.title)}
             key={item.key}
             dataRef={item}
-            className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''}
+            className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-tree slizaa-focus' : 'slizaa-tree'}
           >
             {this.renderTreeNodes(item.children)}
           </TreeNode>
