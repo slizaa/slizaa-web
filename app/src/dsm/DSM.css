@@ -1,17 +1,17 @@
 .grid {
-    stroke: #9A8B7A;
+    stroke: #D1AE54;
     stroke-width: 1px;
-    fill: #CF7D1C;
+    fill: #D1AE54;
   }
 
   .arc {
-    stroke: #9A8B7A;
+    stroke:#D1AE54;
     fill: none;
   }
   
   .node {
     fill: #EBD8C1;
-    stroke: #9A8B7A;
+    stroke: #D1AE54;
     stroke-width: 1px;
   }
   
