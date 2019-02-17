@@ -1,0 +1,12 @@
+.ant-tree li {
+    padding: 0px 0px;
+  }
+  
+  .ant-tree li ul {
+    margin: 0;
+    padding: 0 0 0 5px;
+  }
+  
+  .ant-tree li .ant-tree-node-content-wrapper {
+    padding: 0px 0px;
+  }

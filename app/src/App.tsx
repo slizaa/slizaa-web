@@ -32,6 +32,7 @@ class App extends Component {
   public render() {
     return (
       <ApolloProvider client={client}>
+
         <BrowserRouter>
           <Layout style={{ minHeight: '100vh' }}>
             <Sider
@@ -79,9 +80,9 @@ class App extends Component {
                 <Route path="/punkie" component={Dummy} />
               </Content>
             </Layout>
-
           </Layout>
         </BrowserRouter>
+        
       </ApolloProvider>
     );
   }

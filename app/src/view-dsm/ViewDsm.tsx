@@ -4,6 +4,7 @@ import { Row, Col } from 'antd';
 import SlizaaTree from 'src/slizaatree/SlizaaTree';
 import { AntTreeNodeSelectedEvent } from 'antd/lib/tree';
 import DSM from 'src/dsm/DSM';
+import './ViewDsm.css';
 
 export class ViewDsm extends React.Component<any, any> {
 
@@ -18,10 +19,10 @@ export class ViewDsm extends React.Component<any, any> {
                 {cl =>
                     <div>
                         <Row>
-                            <Col span={7} >
+                            <Col span={8} >
                                 <SlizaaTree client={cl} databaseId="test" hierarchicalGraphId="01" onSelect={this.onSelect}/>
                             </Col>
-                            <Col span={17} >
+                            <Col span={16} >
                                 <DSM nodes={[{id:"1", text:"model"}, {id:"2", text:"tools"}, {id:"3", text:"lang"}, {id:"4", text:"ant"}]} 
                                      dependencies={[{source:1, target:3}, {source:2, target:3}]} 
                                      height={500} width={500} />
