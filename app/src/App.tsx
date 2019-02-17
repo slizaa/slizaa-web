@@ -7,9 +7,11 @@ import { BrowserRouter, Link, Route, RouteComponentProps } from "react-router-do
 import { createHttpLink } from 'apollo-link-http';
 import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
-import { ApolloProvider} from 'react-apollo';
+import { ApolloProvider } from 'react-apollo';
 import BarChart from './d3ex/BarChart';
 import { ViewDsm } from './view-dsm/ViewDsm';
+import { createStore, Action } from 'redux';
+import { Provider } from 'react-redux';
 
 const httpLink = createHttpLink({
   uri: 'http://localhost:8085/graphql/'
@@ -19,6 +21,8 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: httpLink,
 });
+
+const store = createStore(mainReducer, { counter: 0 });
 
 const { Content, Sider } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -32,7 +36,7 @@ class App extends Component {
   public render() {
     return (
       <ApolloProvider client={client}>
-
+<Provider store={store}>
         <BrowserRouter>
           <Layout style={{ minHeight: '100vh' }}>
             <Sider
@@ -82,7 +86,7 @@ class App extends Component {
             </Layout>
           </Layout>
         </BrowserRouter>
-        
+        </Provider>
       </ApolloProvider>
     );
   }
@@ -97,5 +101,19 @@ function Dummy(match: RouteComponentProps<any>): any {
     <BarChart data={[1, 2, 3]} height={500} width={500} />
   );
 }
+
+function mainReducer(state: IApplicationState, action: Action) {
+  // switch (action.type) {
+  //   case 'TOGGLE_SELECT_REPOSITORY': {
+  //     return applyToggleSelectRepository(state, action);
+  //   }
+  //   default:
+  return state;
+  // }
+}
+
+export interface IApplicationState {
+  counter: number;
+};
 
 export default App;
