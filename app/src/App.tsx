@@ -8,7 +8,6 @@ import { createHttpLink } from 'apollo-link-http';
 import ApolloClient from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from 'react-apollo';
-import BarChart from './d3ex/BarChart';
 import { ViewDsm } from './view-dsm/ViewDsm';
 import { createStore, Action } from 'redux';
 import { Provider } from 'react-redux';
@@ -98,7 +97,7 @@ class App extends Component {
 
 function Dummy(match: RouteComponentProps<any>): any {
   return (
-    <BarChart data={[1, 2, 3]} height={500} width={500} />
+    <h1>HALLO TEST</h1>
   );
 }
 

@@ -3,7 +3,7 @@ import { ApolloConsumer } from 'react-apollo';
 import { Row, Col } from 'antd';
 import SlizaaTree from 'src/slizaatree/SlizaaTree';
 import { AntTreeNodeSelectedEvent } from 'antd/lib/tree';
-import DSM from 'src/dsm/DSM';
+import DSM from 'src/components/dsm';
 import './ViewDsm.css';
 
 export class ViewDsm extends React.Component<any, any> {

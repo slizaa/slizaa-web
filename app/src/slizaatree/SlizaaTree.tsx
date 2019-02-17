@@ -1,5 +1,5 @@
 import { Tree } from 'antd';
-import { SlizaaIcon } from '../slizaaicon/SlizaaIcon';
+import { SlizaaIcon } from '../components/slizaaicon';
 import { AntTreeNode, AntTreeNodeExpandedEvent } from "antd/lib/tree";
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
