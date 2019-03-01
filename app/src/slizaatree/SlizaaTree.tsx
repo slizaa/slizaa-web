@@ -5,10 +5,10 @@ import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import './SlizaaTree.css';
-import { ISlizaaTreeComponentProperties } from './ISlizaaTreeComponentProperties';
+import { ISlizaaTreeComponentProperties } from './ISlizaaTreeComponentProps';
 import { WithApolloClient } from 'react-apollo';
-import { ISlizaaTreeComponentNode } from './ISlizaaTreeComponentNode';
-import { ISlizaaTreeComponentModel } from './ISlizaaTreeComponentModel';
+import { ISlizaaNode } from '../model/ISlizaaNode';
+import { ISlizaaTreeComponentModel } from './ISlizaaTreeComponentState';
 
 const nodeChildrenQuery = gql`
 query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
@@ -117,8 +117,8 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
     });
   }
 
-  public renderTreeNodes = (treeNodes: ISlizaaTreeComponentNode[]) => {
-    return treeNodes.map((item: ISlizaaTreeComponentNode) => {
+  public renderTreeNodes = (treeNodes: ISlizaaNode[]) => {
+    return treeNodes.map((item: ISlizaaNode) => {
       if (item.children) {
         return (
           <TreeNode
