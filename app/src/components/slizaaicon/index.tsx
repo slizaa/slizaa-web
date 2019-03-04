@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Query } from 'react-apollo';
 import { Icon } from 'antd';
 import gql from 'graphql-tag';
+import * as React from 'react';
+import { Query } from 'react-apollo';
 
 const GET_SVG = gql`
   query Svg($identifier: ID!) {

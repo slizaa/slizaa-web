@@ -1,14 +1,13 @@
 import "antd/dist/antd.css";
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-
 import './index.css';
 
+import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import registerServiceWorker from './registerServiceWorker';
-import App from './App';
+import SlizaaApp from './SlizaaApp';
 
 ReactDOM.render(
-  <App />,
+  <SlizaaApp />,
   document.getElementById('root') as HTMLElement
 );
 registerServiceWorker();

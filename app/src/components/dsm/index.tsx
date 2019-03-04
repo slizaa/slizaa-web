@@ -12,6 +12,13 @@ interface INode {
   text: string;
 }
 
+interface IDsmProps {
+  dependencies: IDependency[];
+  nodes: INode[];
+  width: number;
+  height: number;
+}
+
 interface InternalNode {
   id: string;
   x: number;
@@ -19,22 +26,14 @@ interface InternalNode {
   weight: number;
 }
 
-// tslint:disable-next-line:interface-name
-interface Props {
-  dependencies: IDependency[];
-  nodes: INode[];
-  width: number;
-  height: number;
-}
-
-export default class DSM extends React.Component<Props> {
+export default class DSM extends React.Component<IDsmProps> {
   private svgRef?: SVGElement | null;
 
   public componentDidMount() {
     this.createAdjacencyMatrix(this.props.nodes, this.props.dependencies);
   }
 
-  public componentWillReceiveProps(nextProps: Props) {
+  public componentWillReceiveProps(nextProps: IDsmProps) {
     // if (nextProps.nodes !== this.props.nodes && nextProps.dependencies !== this.props.dependencies) {
     //   this.createAdjacencyMatrix(this.props.nodes, this.props.dependencies);
     // }
@@ -74,7 +73,7 @@ export default class DSM extends React.Component<Props> {
     const svg = select(this.svgRef!);
     const size = 40;
 
-
+    // grid
     svg
       .append("g")
       .attr("transform", "translate(50,50)")
@@ -90,16 +89,33 @@ export default class DSM extends React.Component<Props> {
       .attr("y", d => d.y * size)
       .style("fill-opacity", d => d.weight * .2);
 
-    svg
-      .append("g")
-      .attr("transform", "translate(50,45)")
-      .selectAll("text")
-      .data(nodes)
-      .enter()
-      .append("text")
-      .attr("x", (d, i) => i * size + size/2)
-      .text(d => d.text)
-      .style("text-anchor", "middle");
+      // text above
+      const label = svg
+        .append("g")
+        .selectAll("text")
+        .data(nodes)
+        .enter()
+        .append("g");
+
+      // label.append("rect")
+      //   .attr("x", (d, i) => i * size + size/2)
+      //   .attr("y", 0)
+      //    .attr("width",  40)
+      //    .attr("height",  50)
+      //    .style("fill", "rgb(123,24,255)");
+
+      label.append("text")
+        .attr("transform", "rotate(90 50 50)")
+        .attr("y", (d, i) => i * size + size/2)
+        .attr("x", 0)
+        .text(d => d.text)
+        .style("text-anchor", "right");
+
+      // label.append("text")
+      // .attr("transform", "translate(50,10)")
+      // .attr("x", (d, i) => i * size + size/2)
+      // .text(d => d.text)
+      // .style("text-anchor", "middle");
 
     svg
       .append("g")

@@ -1,9 +1,9 @@
+import { Col, Row } from 'antd';
+import { AntTreeNodeSelectedEvent } from 'antd/lib/tree';
 import * as React from 'react';
 import { ApolloConsumer } from 'react-apollo';
-import { Row, Col } from 'antd';
-import SlizaaTree from 'src/slizaatree/SlizaaTree';
-import { AntTreeNodeSelectedEvent } from 'antd/lib/tree';
 import DSM from 'src/components/dsm';
+import SlizaaTree from 'src/slizaatree/SlizaaTree';
 import './ViewDsm.css';
 
 export class ViewDsm extends React.Component<any, any> {

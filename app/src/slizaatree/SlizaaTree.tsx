@@ -1,14 +1,14 @@
 import { Tree } from 'antd';
-import { SlizaaIcon } from '../components/slizaaicon';
 import { AntTreeNode, AntTreeNodeExpandedEvent } from "antd/lib/tree";
 import { ApolloClient } from 'apollo-client';
 import gql from 'graphql-tag';
 import * as React from 'react';
-import './SlizaaTree.css';
-import { ISlizaaTreeComponentProperties } from './ISlizaaTreeComponentProps';
 import { WithApolloClient } from 'react-apollo';
+import { SlizaaIcon } from '../components/slizaaicon';
 import { ISlizaaNode } from '../model/ISlizaaNode';
+import { ISlizaaTreeComponentProperties } from './ISlizaaTreeComponentProps';
 import { ISlizaaTreeComponentModel } from './ISlizaaTreeComponentState';
+import './SlizaaTree.css';
 
 const nodeChildrenQuery = gql`
 query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {

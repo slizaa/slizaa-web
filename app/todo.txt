@@ -1,0 +1,3 @@
+npm install -g tslint typescript
+npm install -g tslint typescript
+tslint --fix --project .
