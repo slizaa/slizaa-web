@@ -1,3 +1,9 @@
 npm install -g tslint typescript
 npm install -g tslint typescript
 tslint --fix --project .
+
+
+read-me:
+https://github.com/apollographql/apollo-tooling#apollo-servicedownload-output
+https://graphqlmastery.com/blog/generate-javascript-static-types-from-graphql-typescript-and-flow
+npm install -g apollo

@@ -8,9 +8,11 @@
     "@types/react-redux": "^7.0.1",
     "@types/react-router-dom": "^4.3.1",
     "antd": "^3.13.2",
+    "apollo": "^2.6.0",
     "apollo-boost": "^0.1.22",
     "d3": "^5.9.1",
     "d3-scale": "^2.2.2",
+    "global": "^4.3.2",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.0",
     "react": "^16.6.3",
@@ -23,6 +25,8 @@
     "tslint": "^5.13.1"
   },
   "scripts": {
+    "gql_download": "apollo service:download --endpoint=http://localhost:8085/graphql schema/graphql-schema.json",
+    "fix": "tslint --fix --project .",
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
