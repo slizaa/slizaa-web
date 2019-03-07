@@ -2,6 +2,7 @@ import { Icon } from 'antd';
 import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
+import { Svg, SvgVariables } from './__generated__/Svg';
 
 const GET_SVG = gql`
   query Svg($identifier: ID!) {
@@ -23,11 +24,11 @@ export const SlizaaIcon = ({iconId} : ISlizaaIconProperties) => {
         return <Icon component={() => <div dangerouslySetInnerHTML={{ __html: svgCache.get(iconId) }} />} />
     }
 
-    return <Query query={GET_SVG} variables={{ identifier: iconId }}>
+    return <Query<Svg, SvgVariables> query={GET_SVG} variables={{ identifier: iconId }}>
                 {({ loading, error, data }) => {
                     if (loading) { return <Icon component={DefaultSvg} />; }
                     if (error) { return <Icon component={DefaultSvg} /> }
-                    if (data.svg) {
+                    if (data && data.svg) {
                         svgCache.set(iconId, data.svg);
                         // tslint:disable-next-line:jsx-no-lambda
                         return <Icon component={() => <div dangerouslySetInnerHTML={{ __html: data.svg }} />} />

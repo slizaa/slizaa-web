@@ -6,12 +6,13 @@ import * as React from 'react';
 import { WithApolloClient } from 'react-apollo';
 import { SlizaaIcon } from '../components/slizaaicon';
 import { ISlizaaNode } from '../model/ISlizaaNode';
+import { NodeChildren_hierarchicalGraph_node, NodeChildren_hierarchicalGraph_node_children } from './__generated__/NodeChildren';
 import { ISlizaaTreeComponentProperties } from './ISlizaaTreeComponentProps';
 import { ISlizaaTreeComponentModel } from './ISlizaaTreeComponentState';
 import './SlizaaTree.css';
 
 const nodeChildrenQuery = gql`
-query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
+query NodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
   hierarchicalGraph(databaseIdentifier: $databaseId, hierarchicalGraphIdentifier: $hierarchicalGraphId) {
     node(id: $nodeId) {
       id
@@ -24,23 +25,6 @@ query nodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
     }
   }
 }`
-
-interface IResultNode {
-  id: string;
-  text: string;
-  iconIdentifier: string;
-  hasChildren: boolean;
-}
-
-interface IResult {
-  hierarchicalGraph: {
-    node: {
-      children: [IResultNode]
-    }
-  }
-}
-
-const TreeNode = Tree.TreeNode;
 
 export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComponentProperties>, ISlizaaTreeComponentModel> {
 
@@ -95,7 +79,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
       })
         .then(result => {
 
-          const resultChildren: IResultNode[] = (result.data as IResult).hierarchicalGraph.node.children;
+          const resultChildren: NodeChildren_hierarchicalGraph_node_children[] = (result.data as NodeChildren_hierarchicalGraph_node).children;
 
           treeNode.props.dataRef.children = new Array(resultChildren.length);
 
@@ -110,8 +94,6 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
           resolve();
         })
         .catch(reason => {
-          // tslint:disable-next-line:no-console
-          console.log(reason);
           reject();
         });
     });
@@ -121,7 +103,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
     return treeNodes.map((item: ISlizaaNode) => {
       if (item.children) {
         return (
-          <TreeNode
+          <Tree.TreeNode
             icon={<SlizaaIcon iconId={item.iconId} />}
             title={this.trim(item.title)}
             key={item.key}
@@ -129,11 +111,11 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeComp
             className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-tree slizaa-focus' : 'slizaa-tree'}
           >
             {this.renderTreeNodes(item.children)}
-          </TreeNode>
+          </Tree.TreeNode>
         );
       }
       // tslint:disable-next-line:jsx-key
-      return <TreeNode icon={<SlizaaIcon iconId={item.iconId} />} isLeaf={!item.hasChildren} title={this.trim(item.title)} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
+      return <Tree.TreeNode icon={<SlizaaIcon iconId={item.iconId} />} isLeaf={!item.hasChildren} title={this.trim(item.title)} key={item.key} dataRef={item} className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-focus' : ''} />;
     });
   }
 
