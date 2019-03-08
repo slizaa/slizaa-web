@@ -1,19 +1,13 @@
 import { Spin } from 'antd';
-import gql from 'graphql-tag';
 import * as React from 'react';
 import { Query } from 'react-apollo';
 import { HasInstalledExtensions } from './__generated__/HasInstalledExtensions'
+import { GQ_HAS_INSTALLED_EXTENSIONS } from './GqlQueries';
 import { ServerConfigWizard } from './ServerConfigWizard';
 
-const GQ_HAS_INSTALLED_EXTENSIONS = gql`
-  query HasInstalledExtensions {
-    hasInstalledExtensions
-  }
- `;
+export class ServerConfigValidator extends React.Component<{}, {}> {
 
-export class ServerConfigValidator extends React.Component<any, any> {
-
-    constructor(props: any) {
+    constructor(props: {}) {
         super(props)
     
         this.rerender = this.rerender.bind(this)
@@ -30,7 +24,8 @@ export class ServerConfigValidator extends React.Component<any, any> {
                 return <Spin size="large" /> 
             }
             if (data && data.hasInstalledExtensions) {
-                return <ServerConfigWizard rerender={this.rerender} />
+                return <ServerConfigWizard rerender={this.rerender}/>
+                // return <div>{this.props.children}</div>
             } else {
                 return <ServerConfigWizard rerender={this.rerender}/>
             }

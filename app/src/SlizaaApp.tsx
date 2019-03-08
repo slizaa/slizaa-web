@@ -8,6 +8,7 @@ import { Component } from "react";
 import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import { Action, createStore } from 'redux';
+import { MainView } from './views/MainView';
 import { ServerConfigValidator } from './views/serverconfig';
 
 // TODO: origin url
@@ -29,7 +30,9 @@ class SlizaaApp extends Component {
     return (
       <ApolloProvider client={client}>
         <Provider store={store}>
-          <ServerConfigValidator />
+          <ServerConfigValidator>
+            <MainView />
+          </ServerConfigValidator>  
         </Provider>
       </ApolloProvider>
     );

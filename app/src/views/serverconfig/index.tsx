@@ -1,1 +1,1 @@
-export {ServerConfigValidator} from './ServerConfigValidator';
+export {ServerConfigValidator} from './internal/ServerConfigValidator';
