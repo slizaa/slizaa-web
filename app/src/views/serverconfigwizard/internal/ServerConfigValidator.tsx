@@ -24,8 +24,7 @@ export class ServerConfigValidator extends React.Component<{}, {}> {
                 return <Spin size="large" /> 
             }
             if (data && data.hasInstalledExtensions) {
-                return <ServerConfigWizard rerender={this.rerender}/>
-                // return <div>{this.props.children}</div>
+                return <div>{this.props.children}</div>
             } else {
                 return <ServerConfigWizard rerender={this.rerender}/>
             }

@@ -9,7 +9,7 @@ import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import { Action, createStore } from 'redux';
 import { MainView } from './views/MainView';
-import { ServerConfigValidator } from './views/serverconfig';
+import { ServerConfigValidator } from './views/serverconfigwizard';
 
 // TODO: origin url
 const httpLink = createHttpLink({

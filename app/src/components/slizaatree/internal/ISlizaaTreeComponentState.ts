@@ -1,4 +1,4 @@
-import { ISlizaaNode } from '../model/ISlizaaNode';
+import { ISlizaaNode } from '../../../model/ISlizaaNode';
 
 export interface ISlizaaTreeComponentModel {
     
