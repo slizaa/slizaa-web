@@ -1,5 +1,5 @@
 import { Tree } from 'antd';
-import { AntTreeNode, AntTreeNodeExpandedEvent } from "antd/lib/tree";
+import { AntTreeNode, AntTreeNodeExpandedEvent, AntTreeNodeSelectedEvent } from "antd/lib/tree";
 import { ApolloClient } from 'apollo-client';
 import * as React from 'react';
 import { WithApolloClient } from 'react-apollo';
@@ -32,14 +32,11 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeProp
   }
 
   public onExpand = (expandedKeys: string[], info: AntTreeNodeExpandedEvent) => {
-    // empty block
+    this.props.onExpand(expandedKeys);
   }
 
-  public onClick = (e: React.MouseEvent<HTMLElement>, node: AntTreeNode) => {
-    //  this.slizaaTreeComponentModel.focusedNode = node.props.dataRef;
-    //  this.setState({
-    //   focusedNode: this.slizaaTreeComponentModel.focusedNode
-    // });
+  public onSelect = (selectedKeys: string[], info: AntTreeNodeSelectedEvent) => {
+    this.props.onSelect(selectedKeys);
   }
 
   public onLoadData = (treeNode: AntTreeNode) => {
@@ -68,7 +65,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeProp
           console.log(result);
 
           if (result.data.hierarchicalGraph && result.data.hierarchicalGraph.node) {
-            const resultChildren = result.data.hierarchicalGraph.node.children
+            const resultChildren = result.data.hierarchicalGraph.node.children.nodes
             treeNode.props.dataRef.children = new Array(resultChildren.length);
             
             for (let i = 0; i < resultChildren.length; i++) {
@@ -112,18 +109,17 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeProp
 
   public render() {
     return (
-      <Tree
-        multiple={false}
-        selectable={true}
-        loadData={this.onLoadData}
-        onClick={this.onClick}
-        onSelect={this.props.onSelect}
-        onExpand={this.onExpand}
-        showIcon={true}
-        showLine={false}
-      >
-        {this.renderTreeNodes(this.slizaaTreeComponentModel.rootNodes)}
-      </Tree>
+        <Tree
+          multiple={false}
+          selectable={true}
+          loadData={this.onLoadData}
+          onSelect={this.onSelect}
+          onExpand={this.onExpand}
+          showIcon={true}
+          showLine={false}
+        >
+          {this.renderTreeNodes(this.slizaaTreeComponentModel.rootNodes)}
+        </Tree>
     );
   }
 

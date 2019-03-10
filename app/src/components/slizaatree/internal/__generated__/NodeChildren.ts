@@ -6,7 +6,7 @@
 // GraphQL query operation: NodeChildren
 // ====================================================
 
-export interface NodeChildren_hierarchicalGraph_node_children {
+export interface NodeChildren_hierarchicalGraph_node_children_nodes {
   __typename: "Node";
   /**
    * The symbolicName for this node
@@ -20,6 +20,14 @@ export interface NodeChildren_hierarchicalGraph_node_children {
   hasChildren: boolean;
 }
 
+export interface NodeChildren_hierarchicalGraph_node_children {
+  __typename: "NodeSet";
+  /**
+   * contained nodes as node array
+   */
+  nodes: NodeChildren_hierarchicalGraph_node_children_nodes[];
+}
+
 export interface NodeChildren_hierarchicalGraph_node {
   __typename: "Node";
   /**
@@ -29,7 +37,7 @@ export interface NodeChildren_hierarchicalGraph_node {
   /**
    * The children
    */
-  children: NodeChildren_hierarchicalGraph_node_children[];
+  children: NodeChildren_hierarchicalGraph_node_children;
 }
 
 export interface NodeChildren_hierarchicalGraph {

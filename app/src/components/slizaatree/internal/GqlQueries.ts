@@ -6,10 +6,12 @@ query NodeChildren($databaseId: ID!, $hierarchicalGraphId: ID!, $nodeId: ID!)  {
     node(id: $nodeId) {
       id
       children {
-        id
-        text
-        iconIdentifier
-        hasChildren
+        nodes {
+          id
+          text
+          iconIdentifier
+          hasChildren
+        }
       } 
     }
   }
