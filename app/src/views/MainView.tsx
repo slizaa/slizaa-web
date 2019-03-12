@@ -1,8 +1,8 @@
 import { Icon, Layout, Menu } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
-import SubMenu from 'antd/lib/menu/SubMenu';
 import * as React from 'react';
 import { BrowserRouter, Link, Route } from 'react-router-dom';
+import { SlizaaHgChooser } from 'src/components/slizaahgchooser';
 import { ViewDsm } from 'src/views/dsmview/internal/ViewDsm';
 
 interface IState {
@@ -39,26 +39,8 @@ export class MainView extends React.Component<{}, IState> {
                 <span>Deshboard</span>
                 <Link to="/" />
               </Menu.Item>
-              <SubMenu key="sub4" title={<span><Icon type="setting" /><span>DB 'Core'</span></span>}>
-                <SubMenu key="subsub4" title={<span><Icon type="setting" /><span>H1</span></span>}>
-                  <Menu.Item key="9">
-                    <span>Spunkie</span>
-                    <Link to="/spunkie" />
-                  </Menu.Item>
-                  <Menu.Item key="10">
-                    <span>Punkie</span>
-                    <Link to="/punkie" />
-                  </Menu.Item>
-                  <Menu.Item key="11">Option 11</Menu.Item>
-                  <Menu.Item key="12">Option 12</Menu.Item>
-                </SubMenu>
-                <SubMenu key="subsub5" title={<span><Icon type="setting" /><span>Navigation Three</span></span>}>
-                  <Menu.Item key="11">Option 11</Menu.Item>
-                  <Menu.Item key="12">Option 12</Menu.Item>
-                </SubMenu>
-              </SubMenu>
               <Menu.Item key="2">
-                <Icon type="desktop" />
+                <Icon type="setting" />
                 <span>Meseros</span>
                 <Link to="/meseros" />
               </Menu.Item>
@@ -71,6 +53,7 @@ export class MainView extends React.Component<{}, IState> {
                 type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                 onClick={this.toggleCollapsed}
               />
+              <SlizaaHgChooser currentDatabase="test" currentHierarchicalGraph="01"/>
             </Layout.Header>
             <Layout.Content style={{ margin: 8, padding: 8, minHeight: 280 }}>
               <Route exact={true} path="/" component={ViewDsm} />
