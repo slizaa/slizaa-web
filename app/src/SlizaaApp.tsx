@@ -7,7 +7,8 @@ import * as React from "react";
 import { Component } from "react";
 import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
-import { Action, createStore } from 'redux';
+import { createStore } from 'redux';
+import { appReducer } from './redux/Reducers';
 import { MainView } from './views/MainView';
 import { ServerConfigValidator } from './views/serverconfigwizard';
 
@@ -22,7 +23,7 @@ const client = new ApolloClient({
   link: httpLink,
 });
 
-const store = createStore(mainReducer, { counter: 0 });
+const store = createStore(appReducer, { });
 
 class SlizaaApp extends Component {
 
@@ -38,13 +39,5 @@ class SlizaaApp extends Component {
     );
   }
 }
-
-function mainReducer(state: IApplicationState, action: Action) {
-  return state;
-}
-
-export interface IApplicationState {
-  counter: number;
-};
 
 export default SlizaaApp;
