@@ -9,8 +9,10 @@ import './SlizaaHgChooser.css';
 
 // tslint:disable-next-line:no-empty-interface
 export interface ISlizaaHgChooserProps {
-    currentDatabase: string | null;
-    currentHierarchicalGraph: string | null;
+    currentDatabase: string | null
+    currentHierarchicalGraph: string | null
+    onDatabaseSelect: (selectedDatabaseId: string) => void
+    onHierarchicalGraphSelect: (selectHierarchicalGraphId: string) => void
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -23,7 +25,8 @@ export class SlizaaHgChooser extends React.Component<ISlizaaHgChooserProps, ISli
     constructor(props: ISlizaaHgChooserProps) {
         super(props);
 
-        this.handleOnClick = this.handleOnClick.bind(this);
+        this.handleDatabaseSelection = this.handleDatabaseSelection.bind(this);
+        this.handleHierarchicalGraphSelection = this.handleHierarchicalGraphSelection.bind(this);
     }
 
     public render() {
@@ -34,19 +37,19 @@ export class SlizaaHgChooser extends React.Component<ISlizaaHgChooserProps, ISli
                 if (data && data.graphDatabases) {
 
                     const databasesMenuItems = data.graphDatabases.map(database => <Menu.Item key={database.identifier}>{database.identifier}</Menu.Item>);
-                    const databasesMenu = <Menu onClick={this.handleOnClick}>
+                    const databasesMenu = <Menu onClick={this.handleDatabaseSelection}>
                         {databasesMenuItems}
                     </Menu>;
 
                     const hierarchicalGraphMenuItems = data.graphDatabases
                         .filter(database => this.props.currentDatabase && database.identifier === this.props.currentDatabase)
                         .map(database => database.hierarchicalGraphs.map(item => <Menu.Item key={item.identifier}>{item.identifier}</Menu.Item>));
-                    const hierarchicalGraphsMenu = <Menu onClick={this.handleOnClick}>
+                    const hierarchicalGraphsMenu = <Menu onClick={this.handleHierarchicalGraphSelection}>
                         {hierarchicalGraphMenuItems}
                     </Menu>;
 
-                    const currentDatabaseLabel = (this.props.currentDatabase) ? this.props.currentDatabase : "-";
-                    const currentHierarchicalGraphLabel = (this.props.currentHierarchicalGraph) ? this.props.currentHierarchicalGraph : "-";
+                    const currentDatabaseLabel = (this.props.currentDatabase) ? this.props.currentDatabase : "<->";
+                    const currentHierarchicalGraphLabel = (this.props.currentHierarchicalGraph) ? this.props.currentHierarchicalGraph : "<->";
 
                     return <div style={{ display: "inline-block" }}>
                         <Dropdown className="dropDownDatabases" overlay={databasesMenu} placement="bottomLeft">
@@ -64,8 +67,11 @@ export class SlizaaHgChooser extends React.Component<ISlizaaHgChooserProps, ISli
         </Query>
     }
 
-    private handleOnClick(param: ClickParam) {
-        // tslint:disable-next-line:no-console
-        console.log(param.key);
+    private handleDatabaseSelection(param: ClickParam) {
+        this.props.onDatabaseSelect(param.key)
+    }
+
+    private handleHierarchicalGraphSelection(param: ClickParam) {
+        this.props.onHierarchicalGraphSelect(param.key)
     }
 }

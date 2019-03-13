@@ -1,17 +1,28 @@
 import { Icon, Layout, Menu } from 'antd';
 import Sider from 'antd/lib/layout/Sider';
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { BrowserRouter, Link, Route } from 'react-router-dom';
+import { Dispatch } from 'redux';
 import { SlizaaHgChooser } from 'src/components/slizaahgchooser';
+import { actionSelectDatabase, actionSelectHierarchicalGraph } from 'src/redux/Actions';
+import { IAppState } from 'src/redux/IAppState';
 import { ViewDsm } from 'src/views/dsmview/internal/ViewDsm';
 
-interface IState {
-  collapsed: boolean;
+import './MainView.css';
+
+interface IProps {
+  currentDatabase: string
+  currentHierarchicalGraph: string
+  dispatchSelectDatabase: (selectedDatabaseId: string) => void
+  dispatchSelectHierarchicalGraph: (selectHierarchicalGraphId: string) => void
 }
+interface IState {
+  collapsed: boolean
+}
+export class MainView extends React.Component<IProps, IState> {
 
-export class MainView extends React.Component<{}, IState> {
-
-  constructor(props: {}) {
+  constructor(props: IProps) {
     super(props);
 
     this.state = {
@@ -22,6 +33,10 @@ export class MainView extends React.Component<{}, IState> {
   }
 
   public render() {
+
+    // TODO
+    const imageSource = this.state.collapsed ? "favicon.ico" : "favicon.ico";
+
     return (
       <BrowserRouter>
         <Layout style={{ minHeight: '100vh' }}>
@@ -32,7 +47,11 @@ export class MainView extends React.Component<{}, IState> {
             onCollapse={this.onCollapse}
             trigger={null}
           >
-            <div className="logo" />
+            <div className="main-view-sider-logo" >
+              <Link to="/">
+                <img src={imageSource} alt="logo" />
+              </Link>
+            </div>
             <Menu defaultSelectedKeys={['1']} mode="inline" theme="dark">
               <Menu.Item key="1">
                 <Icon type="pie-chart" />
@@ -53,7 +72,12 @@ export class MainView extends React.Component<{}, IState> {
                 type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                 onClick={this.toggleCollapsed}
               />
-              <SlizaaHgChooser currentDatabase="test" currentHierarchicalGraph="01"/>
+              <SlizaaHgChooser
+                currentDatabase={this.props.currentDatabase}
+                currentHierarchicalGraph={this.props.currentHierarchicalGraph}
+                onDatabaseSelect={this.props.dispatchSelectDatabase}
+                onHierarchicalGraphSelect={this.props.dispatchSelectHierarchicalGraph}
+              />
             </Layout.Header>
             <Layout.Content style={{ margin: 8, padding: 8, minHeight: 280 }}>
               <Route exact={true} path="/" component={ViewDsm} />
@@ -78,3 +102,23 @@ export class MainView extends React.Component<{}, IState> {
     });
   }
 }
+
+const mapStateToProps = (state: IAppState) => {
+  return {
+    currentDatabase: state.currentDatabase,
+    currentHierarchicalGraph: state.currentHierarchicalGraph,
+  }
+}
+
+const mapDispatchToProps = (dispatch: Dispatch) => { // tslint:disable-line
+  return {
+    dispatchSelectDatabase: (selectedDatabaseId: string) => {
+      dispatch(actionSelectDatabase(selectedDatabaseId));
+    },
+    dispatchSelectHierarchicalGraph: (selectedDatabaseId: string) => {
+      dispatch(actionSelectHierarchicalGraph(selectedDatabaseId));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainView);

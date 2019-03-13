@@ -9,7 +9,7 @@ import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { appReducer } from './redux/Reducers';
-import { MainView } from './views/MainView';
+import MainView from './views/mainview/internal/MainView';
 import { ServerConfigValidator } from './views/serverconfigwizard';
 
 // TODO: origin url
