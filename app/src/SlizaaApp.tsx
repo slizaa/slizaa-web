@@ -8,6 +8,7 @@ import { Component } from "react";
 import { ApolloProvider } from 'react-apollo';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import { appReducer } from './redux/Reducers';
 import MainView from './views/mainview/internal/MainView';
 import { ServerConfigValidator } from './views/serverconfigwizard';
@@ -23,7 +24,7 @@ const client = new ApolloClient({
   link: httpLink,
 });
 
-const store = createStore(appReducer, { });
+const store = createStore(appReducer, composeWithDevTools());
 
 class SlizaaApp extends Component {
 

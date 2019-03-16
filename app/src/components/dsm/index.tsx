@@ -2,19 +2,20 @@ import { select } from 'd3-selection';
 import * as React from 'react';
 import './DSM.css';
 
-interface IDependency {
-  source: number;
-  target: number;
+interface ICell {
+  row: number;
+  column: number;
+  value: number;
 }
 
-interface INode {
+interface ILabel {
   id: string;
   text: string;
 }
 
 interface IDsmProps {
-  dependencies: IDependency[];
-  nodes: INode[];
+  cells: ICell[];
+  labels: ILabel[];
   width: number;
   height: number;
 }
@@ -30,13 +31,14 @@ export default class DSM extends React.Component<IDsmProps> {
   private svgRef?: SVGElement | null;
 
   public componentDidMount() {
-    this.createAdjacencyMatrix(this.props.nodes, this.props.dependencies);
+    this.createAdjacencyMatrix(this.props.labels, this.props.cells);
   }
 
   public componentWillReceiveProps(nextProps: IDsmProps) {
     // if (nextProps.nodes !== this.props.nodes && nextProps.dependencies !== this.props.dependencies) {
     //   this.createAdjacencyMatrix(this.props.nodes, this.props.dependencies);
     // }
+    this.createAdjacencyMatrix(this.props.labels, this.props.cells);
   }
 
   public render() {
@@ -46,17 +48,17 @@ export default class DSM extends React.Component<IDsmProps> {
     );
   }
 
-  private createAdjacencyMatrix(nodes: INode[], dependencies: IDependency[]) {
+  private createAdjacencyMatrix(labels: ILabel[], cells: ICell[]) {
 
     const edgeHash = {};
-    dependencies.forEach(dep => {
-      const id = `${dep.source}-${dep.target}`;
-      edgeHash[id] = dep;
+    cells.forEach(cell => {
+      const id = `${cell.row}-${cell.column}`;
+      edgeHash[id] = cell;
     });
 
     const matrix: InternalNode[] = [];
-    nodes.forEach((source, a) => {
-      nodes.forEach((target, b) => {
+    labels.forEach((source, a) => {
+      labels.forEach((target, b) => {
         const grid = {
           id: `${source.id}-${target.id}`,
           weight: 0,
@@ -87,45 +89,49 @@ export default class DSM extends React.Component<IDsmProps> {
       .attr("height", size)
       .attr("x", d => d.x * size)
       .attr("y", d => d.y * size)
-      .style("fill-opacity", d => d.weight * .2);
+      .style("fill-opacity", d => d.weight * .2)
+      .exit()
+      .remove();
 
-      // text above
-      const label = svg
-        .append("g")
-        .selectAll("text")
-        .data(nodes)
-        .enter()
-        .append("g");
+    // text above
+    svg
+      .append("g")
+      .selectAll("text")
+      .data(labels)
+      .enter()
+      .append("g").append("text")
+      .attr("transform", "rotate(90 50 50)")
+      .attr("y", (d, i) => i * size + size / 2)
+      .attr("x", 0)
+      .text(d => d.text)
+      .style("text-anchor", "right")
+      .exit()
+      .remove();
 
-      // label.append("rect")
-      //   .attr("x", (d, i) => i * size + size/2)
-      //   .attr("y", 0)
-      //    .attr("width",  40)
-      //    .attr("height",  50)
-      //    .style("fill", "rgb(123,24,255)");
+    // label.append("rect")
+    //   .attr("x", (d, i) => i * size + size/2)
+    //   .attr("y", 0)
+    //    .attr("width",  40)
+    //    .attr("height",  50)
+    //    .style("fill", "rgb(123,24,255)");
 
-      label.append("text")
-        .attr("transform", "rotate(90 50 50)")
-        .attr("y", (d, i) => i * size + size/2)
-        .attr("x", 0)
-        .text(d => d.text)
-        .style("text-anchor", "right");
-
-      // label.append("text")
-      // .attr("transform", "translate(50,10)")
-      // .attr("x", (d, i) => i * size + size/2)
-      // .text(d => d.text)
-      // .style("text-anchor", "middle");
+    // label.append("text")
+    // .attr("transform", "translate(50,10)")
+    // .attr("x", (d, i) => i * size + size/2)
+    // .text(d => d.text)
+    // .style("text-anchor", "middle");
 
     svg
       .append("g")
       .attr("transform", "translate(45,50)")
       .selectAll("text")
-      .data(nodes)
+      .data(labels)
       .enter()
       .append("text")
-      .attr("y", (d, i) => i * size + size/2)
-      .text(d => d.text);
+      .attr("y", (d, i) => i * size + size / 2)
+      .text(d => d.text)
+      .exit()
+      .remove();
 
     //   svg.
     //       selectAll("rect.grid").on("mouseover", gridOver);

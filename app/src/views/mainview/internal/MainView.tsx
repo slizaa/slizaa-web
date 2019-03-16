@@ -7,7 +7,7 @@ import { Dispatch } from 'redux';
 import { SlizaaHgChooser } from 'src/components/slizaahgchooser';
 import { actionSelectDatabase, actionSelectHierarchicalGraph } from 'src/redux/Actions';
 import { IAppState } from 'src/redux/IAppState';
-import { ViewDsm } from 'src/views/dsmview/internal/ViewDsm';
+import ViewDsm from 'src/views/dsmview/internal/ViewDsm';
 
 import './MainView.css';
 
@@ -36,7 +36,7 @@ export class MainView extends React.Component<IProps, IState> {
 
     // TODO
     const imageSource = this.state.collapsed ? "favicon.ico" : "favicon.ico";
-
+  
     return (
       <BrowserRouter>
         <Layout style={{ minHeight: '100vh' }}>
@@ -82,8 +82,6 @@ export class MainView extends React.Component<IProps, IState> {
             <Layout.Content style={{ margin: 8, padding: 8, minHeight: 280 }}>
               <Route exact={true} path="/" component={ViewDsm} />
               <Route path="/meseros" component={ViewDsm} />
-              <Route path="/spunkie" component={ViewDsm} />
-              <Route path="/punkie" component={ViewDsm} />
             </Layout.Content>
           </Layout>
         </Layout>

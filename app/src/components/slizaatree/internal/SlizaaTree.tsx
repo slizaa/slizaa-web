@@ -3,7 +3,7 @@ import { AntTreeNode, AntTreeNodeExpandedEvent, AntTreeNodeSelectedEvent } from 
 import { ApolloClient } from 'apollo-client';
 import * as React from 'react';
 import { WithApolloClient } from 'react-apollo';
-import { ISlizaaNode } from 'src/model/ISlizaaNode';
+import { ISlizaaNode } from 'src/components/slizaatree/internal/ISlizaaNode';
 import { SlizaaIcon } from '../../slizaaicon';
 import { NodeChildren, NodeChildrenVariables } from './__generated__/NodeChildren';
 import { NodeChildrenQuery } from './GqlQueries';
