@@ -25,10 +25,16 @@ export interface DsmForNodeChildren_hierarchicalGraph_node_children_dependencyMa
   value: number;
 }
 
+export interface DsmForNodeChildren_hierarchicalGraph_node_children_dependencyMatrix_stronglyConnectedComponents {
+  __typename: "StronglyConnectedComponent";
+  nodePositions: number[];
+}
+
 export interface DsmForNodeChildren_hierarchicalGraph_node_children_dependencyMatrix {
   __typename: "DependencyMatrix";
   orderedNodes: DsmForNodeChildren_hierarchicalGraph_node_children_dependencyMatrix_orderedNodes[];
   cells: DsmForNodeChildren_hierarchicalGraph_node_children_dependencyMatrix_cells[];
+  stronglyConnectedComponents: DsmForNodeChildren_hierarchicalGraph_node_children_dependencyMatrix_stronglyConnectedComponents[];
 }
 
 export interface DsmForNodeChildren_hierarchicalGraph_node_children {

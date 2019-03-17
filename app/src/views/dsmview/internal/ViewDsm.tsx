@@ -3,7 +3,7 @@ import * as React from 'react';
 import { ApolloConsumer, Query } from 'react-apollo';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import DSM from 'src/components/dsm';
+import { DSM } from 'src/components/dsm';
 import SlizaaTree from 'src/components/slizaatree/internal/SlizaaTree';
 import { actionSelectNodeSelection } from 'src/redux/Actions';
 import { IAppState, INodeSelection } from 'src/redux/IAppState';
@@ -31,19 +31,23 @@ export class ViewDsm extends React.Component<IProps, any> {
         }
 
         const query = GQ_DSM_FOR_NODE_CHILDREN;
-        const queryVariables = { 
+        const queryVariables = {
             databaseId: this.props.databaseId,
-            hierarchicalGraphId: this.props.hierarchicalGraphId, 
+            hierarchicalGraphId: this.props.hierarchicalGraphId,
             nodeId: this.props.nodeSelection ? this.props.nodeSelection.nodeIds[0] : "-1"
         };
 
+        // tslint:disable-next-line:no-console
+        console.log(this.props.nodeSelection);
+        const items = this.props.nodeSelection ? this.props.nodeSelection.nodeIds.map(id => <li key={id}>{id}</li>) : null;
+
         return (
-            <ApolloConsumer>
-                {cl =>
-                    <div>
-                        <Row gutter={16} type="flex" style={{ marginBottom: 16 }}>
-                            <Col span={8} >
-                                <Card title="Card title" bordered={false} style={{ overflow: 'auto', height: '100%' }}>
+            <div>
+                <Row gutter={16} type="flex" style={{ marginBottom: 16 }}>
+                    <Col span={8} >
+                        <Card title="Hierarchical Graph" bordered={false} style={{ overflow: 'auto', height: '100%' }}>
+                            <ApolloConsumer>
+                                {cl =>
                                     <SlizaaTree
                                         client={cl}
                                         databaseId={this.props.databaseId}
@@ -51,42 +55,46 @@ export class ViewDsm extends React.Component<IProps, any> {
                                         onSelect={this.onSelect}
                                         onExpand={this.onExpand}
                                         expandedKeys={[]} />
-                                </Card>
-                            </Col>
-                            <Col span={16} >
-                                <Card title="Card title" bordered={false} style={{ overflow: 'auto' }}>
-                                    <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables}>
-                                        {({ data }) => {
+                                }
+                            </ApolloConsumer>
+                        </Card>
+                    </Col>
+                    <Col span={16} >
+                        <Card title="Dependencies Overview" bordered={false} >
+                            <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables} fetchPolicy="no-cache">
+                                {({ loading, data }) => {
 
-                                            // tslint:disable-next-line:no-console
-                                            console.log(queryVariables);
+                                    if (loading) {
+                                        return null;
+                                    }
 
-                                            if (!data || !data.hierarchicalGraph || !data.hierarchicalGraph.node) {
-                                                return <div>UNDEFINED - TODO</div>
-                                            }
+                                    if (!data || !data.hierarchicalGraph || !data.hierarchicalGraph.node) {
+                                        return <div>UNDEFINED - TODO</div>
+                                    }
 
-                                            // get the ordered nodes
-                                            const labels = data.hierarchicalGraph.node.children.dependencyMatrix.orderedNodes
-                                            const dependencies = data.hierarchicalGraph.node.children.dependencyMatrix.cells;
-                                            
-                                            return <DSM labels={labels}
-                                                cells={dependencies}
-                                                height={500} width={500} />
-                                        }}
-                                    </Query>
-                                </Card>
-                            </Col>
-                        </Row>
-                        <Row gutter={16}>
-                            <Col span={24} >
-                                <Card title="Card title" bordered={false} style={{ overflow: 'auto' }}>
-                                    HIER SIND DIE DEPENDENCIES
-                                </Card>
-                            </Col>
-                        </Row>
-                    </div>
-                }
-            </ApolloConsumer>
+                                    // get  the data
+                                    const {orderedNodes, cells, stronglyConnectedComponents } = data.hierarchicalGraph.node.children.dependencyMatrix
+                                   
+                                    return <DSM labels={orderedNodes}
+                                                cells={cells}
+                                                stronglyConnectedComponents={stronglyConnectedComponents} />
+                                }}
+                            </Query>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row gutter={16}>
+                    <Col span={24} >
+                        <Card title="Dependencies Details" bordered={false} style={{ overflow: 'auto' }}>
+                            <ul>
+                                {items}
+                            </ul>
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+
+
         );
     }
 
