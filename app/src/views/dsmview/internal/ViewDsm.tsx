@@ -1,9 +1,11 @@
-import { Card, Col, Row, } from 'antd';
+import { Card } from 'antd';
 import * as React from 'react';
 import { ApolloConsumer, Query } from 'react-apollo';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { DSM } from 'src/components/dsm';
+import HorizontalSplitLayout from 'src/components/layout/HorizontalSplitLayout';
+import ResizableBox from 'src/components/layout/ResizableBox';
 import SlizaaTree from 'src/components/slizaatree/internal/SlizaaTree';
 import { actionSelectNodeSelection } from 'src/redux/Actions';
 import { IAppState, INodeSelection } from 'src/redux/IAppState';
@@ -42,59 +44,120 @@ export class ViewDsm extends React.Component<IProps, any> {
         const items = this.props.nodeSelection ? this.props.nodeSelection.nodeIds.map(id => <li key={id}>{id}</li>) : null;
 
         return (
+
             <div>
-                <Row gutter={16} type="flex" style={{ marginBottom: 16 }}>
-                    <Col span={8} >
-                        <Card title="Hierarchical Graph" bordered={false} style={{ overflow: 'auto', height: '100%' }}>
-                            <ApolloConsumer>
-                                {cl =>
-                                    <SlizaaTree
-                                        client={cl}
-                                        databaseId={this.props.databaseId}
-                                        hierarchicalGraphId={this.props.hierarchicalGraphId}
-                                        onSelect={this.onSelect}
-                                        onExpand={this.onExpand}
-                                        expandedKeys={[]} />
-                                }
-                            </ApolloConsumer>
-                        </Card>
-                    </Col>
-                    <Col span={16} >
-                        <Card title="Dependencies Overview" bordered={false} >
-                            <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables} fetchPolicy="no-cache">
-                                {({ loading, data }) => {
+                <ResizableBox height={500}
+                    component={
+                        <HorizontalSplitLayout width={100}
+                            left={
+                                <Card title="Hierarchical Graph" bordered={false} style={{ overflow: 'auto', height: '100%' }}>
+                                    <ApolloConsumer>
+                                        {cl =>
+                                            <SlizaaTree
+                                                client={cl}
+                                                databaseId={this.props.databaseId}
+                                                hierarchicalGraphId={this.props.hierarchicalGraphId}
+                                                onSelect={this.onSelect}
+                                                onExpand={this.onExpand}
+                                                expandedKeys={[]} />
+                                        }
+                                    </ApolloConsumer>
+                                </Card>
+                            }
+                            right={
+                                <Card title="Dependencies Overview" bordered={false} >
+                                    <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables} fetchPolicy="no-cache">
+                                        {({ loading, data }) => {
 
-                                    if (loading) {
-                                        return null;
-                                    }
+                                            if (loading) {
+                                                return null;
+                                            }
 
-                                    if (!data || !data.hierarchicalGraph || !data.hierarchicalGraph.node) {
-                                        return <div>UNDEFINED - TODO</div>
-                                    }
+                                            if (!data || !data.hierarchicalGraph || !data.hierarchicalGraph.node) {
+                                                return <div>UNDEFINED - TODO</div>
+                                            }
 
-                                    // get  the data
-                                    const {orderedNodes, cells, stronglyConnectedComponents } = data.hierarchicalGraph.node.children.dependencyMatrix
-                                   
-                                    return <DSM labels={orderedNodes}
+                                            // get  the data
+                                            const { orderedNodes, cells, stronglyConnectedComponents } = data.hierarchicalGraph.node.children.dependencyMatrix
+
+                                            return <DSM labels={orderedNodes}
                                                 cells={cells}
                                                 stronglyConnectedComponents={stronglyConnectedComponents} />
-                                }}
-                            </Query>
-                        </Card>
-                    </Col>
-                </Row>
-                <Row gutter={16}>
-                    <Col span={24} >
-                        <Card title="Dependencies Details" bordered={false} style={{ overflow: 'auto' }}>
-                            <ul>
-                                {items}
-                            </ul>
-                        </Card>
-                    </Col>
-                </Row>
+                                        }}
+                                    </Query>
+                                </Card>
+                            }
+                        />
+                    }
+                />
+                <ResizableBox height={500}
+                    component={ 
+                        <HorizontalSplitLayout width={100}
+                            left={ 
+                                <div style={{ width: "100px", height: "100px" }}>HURZ 1</div>
+                            }
+                            right={
+                                <Card title="Dependencies Details" bordered={false} style={{ overflow: 'auto' }}>
+                                    <ul>
+                                        {items}
+                                    </ul>
+                                </Card>
+                            }
+                        />
+                    }
+                />
             </div>
+            // <div>
+            //     <Row gutter={16} type="flex" style={{ marginBottom: 16 }}>
+            //         <Col span={8} >
+            //             <Card title="Hierarchical Graph" bordered={false} style={{ overflow: 'auto', height: '100%' }}>
+            //                 <ApolloConsumer>
+            //                     {cl =>
+            //                         <SlizaaTree
+            //                             client={cl}
+            //                             databaseId={this.props.databaseId}
+            //                             hierarchicalGraphId={this.props.hierarchicalGraphId}
+            //                             onSelect={this.onSelect}
+            //                             onExpand={this.onExpand}
+            //                             expandedKeys={[]} />
+            //                     }
+            //                 </ApolloConsumer>
+            //             </Card>
+            //         </Col>
+            //         <Col span={16} >
+            //             <Card title="Dependencies Overview" bordered={false} >
+            //                 <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables} fetchPolicy="no-cache">
+            //                     {({ loading, data }) => {
 
+            //                         if (loading) {
+            //                             return null;
+            //                         }
 
+            //                         if (!data || !data.hierarchicalGraph || !data.hierarchicalGraph.node) {
+            //                             return <div>UNDEFINED - TODO</div>
+            //                         }
+
+            //                         // get  the data
+            //                         const {orderedNodes, cells, stronglyConnectedComponents } = data.hierarchicalGraph.node.children.dependencyMatrix
+
+            //                         return <DSM labels={orderedNodes}
+            //                                     cells={cells}
+            //                                     stronglyConnectedComponents={stronglyConnectedComponents} />
+            //                     }}
+            //                 </Query>
+            //             </Card>
+            //         </Col>
+            //     </Row>
+            //     <Row gutter={16}>
+            //         <Col span={24} >
+            //             <Card title="Dependencies Details" bordered={false} style={{ overflow: 'auto' }}>
+            //                 <ul>
+            //                     {items}
+            //                 </ul>
+            //             </Card>
+            //         </Col>
+            //     </Row>
+            // </div>
         );
     }
 

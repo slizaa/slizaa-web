@@ -1,0 +1,27 @@
+.contentFlexContainer {
+    background: #ffffff;
+    display: flex;
+}
+
+.item {
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+.item1 {
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.item2 {
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+    
+.verticalDivider {
+    cursor: w-resize;
+}
+
+.horizontalDivider {
+    cursor: s-resize;
+}
