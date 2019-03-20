@@ -14,16 +14,6 @@ export interface IProps {
 
 export default class HorizontalSplitLayout extends React.Component<IProps, {}> {
 
-    constructor(props: IProps) {
-        super(props);
-
-        // Don't call this.setState() here!
-        this.state = {
-            currentWidth: props.width,
-            resizing: false
-        };
-    }
-
     public render() {
         return (
             <div className="contentFlexContainer" style={{ flexFlow: "row", height: "100%", overflow: "hidden", backgroundColor: "transparent" }}>

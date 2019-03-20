@@ -22,7 +22,9 @@ interface IProps {
 }
 
 interface IState {
-    treeCardWidth: number;
+    treeWidth: number
+    upperHeight: number
+    lowerHeight: number
 }
 
 export class ViewDsm extends React.Component<IProps, IState> {
@@ -30,7 +32,11 @@ export class ViewDsm extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        this.state = { treeCardWidth: 200 }
+        this.state = {
+            lowerHeight: 371,
+            treeWidth: 200,
+            upperHeight: 600,
+        }
     }
 
     public render() {
@@ -53,9 +59,9 @@ export class ViewDsm extends React.Component<IProps, IState> {
         return (
 
             <div>
-                <ResizableBox height={600}
+                <ResizableBox id="upperResizableBox" height={this.state.upperHeight} onHeightChanged={this.onHeightChanged}
                     component={
-                        <HorizontalSplitLayout id="upper" onWidthChanged={this.onWidthChanged} width={this.state.treeCardWidth}
+                        <HorizontalSplitLayout id="upper" onWidthChanged={this.onWidthChanged} width={this.state.treeWidth}
                             left={
                                 <Card title="Hierarchical Graph" >
                                     <ApolloConsumer>
@@ -97,7 +103,7 @@ export class ViewDsm extends React.Component<IProps, IState> {
                         />
                     }
                 />
-                <ResizableBox height={371}
+                <ResizableBox id="lowerResizableBox" height={this.state.lowerHeight} onHeightChanged={this.onHeightChanged}
                     component={
                         <Card title="Dependencies Details" >
                             <ul>
@@ -122,7 +128,16 @@ export class ViewDsm extends React.Component<IProps, IState> {
     }
 
     private onWidthChanged = (id: string, newWidth: number): void => {
-        this.setState({ treeCardWidth: newWidth });
+        this.setState({ treeWidth: newWidth });
+    }
+
+    private onHeightChanged = (id: string, newHeight: number): void => {
+        if (id === "upperResizableBox") {
+            this.setState({ upperHeight: newHeight });
+        }
+        else if (id === "lowerResizableBox") {
+            this.setState({ lowerHeight: newHeight });
+        }
     }
 }
 

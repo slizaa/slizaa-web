@@ -4,40 +4,20 @@ import { DraggableCore, DraggableData, DraggableEvent, DraggableEventHandler } f
 import './CommonLayout.css';
 
 export interface IProps {
+    id: string
     height: number
     gutter?: number
     component: JSX.Element
+    onHeightChanged: (id: string, newHeight: number) => void;
 }
 
-export interface IState {
-    resizing: boolean
-    currentHeight: number
-}
-
-export default class ResizableBox extends React.Component<IProps, IState> {
-
-    constructor(props: IProps) {
-        super(props);
-
-        // Don't call this.setState() here!
-        this.state = { resizing: false, currentHeight: props.height };
-    }
-
-    public componentWillReceiveProps(nextProps: IProps) {
-
-        // If parent changes height, set that in our state.
-        if (!this.state.resizing && nextProps.height !== this.props.height) {
-            this.setState({
-                currentHeight: nextProps.height
-            });
-        }
-    }
+export default class ResizableBox extends React.Component<IProps, {}> {
 
     public render() {
         return (
-            <div style={{ overflow: "hidden", backgroundColor: "transparent"}}>
-                <div style={{ height: this.state.currentHeight + "px", overflow: "hidden", backgroundColor: "transparent" }}>
-                    {React.cloneElement(this.props.component, { style: { height: this.state.currentHeight } })}
+            <div style={{ overflow: "hidden", backgroundColor: "transparent" }}>
+                <div style={{ height: this.props.height + "px", overflow: "hidden", backgroundColor: "transparent" }}>
+                    {React.cloneElement(this.props.component, { style: { height: this.props.height } })}
                 </div>
                 <DraggableCore
                     onStop={this.dragHandler('onResizeStop')}
@@ -52,23 +32,8 @@ export default class ResizableBox extends React.Component<IProps, IState> {
     private dragHandler = (handlerName: string): DraggableEventHandler => {
         return (e: DraggableEvent, data: DraggableData): void | false => {
 
-            const newState: IState = {
-                currentHeight: this.state.currentHeight,
-                resizing: this.state.resizing,
-            };
-
-            if (handlerName === 'onResizeStart') {
-                newState.resizing = true;
-            } else if (handlerName === 'onResizeStop') {
-                newState.resizing = false;
-            } else {
-                const newHeight = this.state.currentHeight + data.deltaY;
-                // Early return if no change after constraints
-                if (newHeight === this.state.currentHeight) { return };
-                newState.currentHeight = newHeight;
-            }
-
-            this.setState(newState);
+            const newHeight = this.props.height + data.deltaY;
+            this.props.onHeightChanged(this.props.id, newHeight);
         }
     }
 }
