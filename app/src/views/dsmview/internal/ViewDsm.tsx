@@ -20,10 +20,16 @@ interface IProps {
     dispatchSelectNodeSelection: (selectedNodeIds: string[]) => void
 }
 
-export class ViewDsm extends React.Component<IProps, any> {
+interface IState {
+    uppderWidth: number;
+}
+
+export class ViewDsm extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
         super(props);
+
+        this.state = { uppderWidth: 200 }
     }
 
     public render() {
@@ -48,7 +54,7 @@ export class ViewDsm extends React.Component<IProps, any> {
             <div>
                 <ResizableBox height={500}
                     component={
-                        <HorizontalSplitLayout width={100}
+                        <HorizontalSplitLayout onWidthChanged={this.onWidthChanged} width={this.state.uppderWidth}
                             left={
                                 <Card title="Hierarchical Graph" bordered={false} style={{ overflow: 'none', height: '100%' }}>
                                     <ApolloConsumer>
@@ -91,9 +97,9 @@ export class ViewDsm extends React.Component<IProps, any> {
                     }
                 />
                 <ResizableBox height={500}
-                    component={ 
-                        <HorizontalSplitLayout width={100}
-                            left={ 
+                    component={
+                        <HorizontalSplitLayout onWidthChanged={this.onWidthChanged} width={100}
+                            left={
                                 <div style={{ width: "100px", height: "100px" }}>HURZ 1</div>
                             }
                             right={
@@ -107,57 +113,6 @@ export class ViewDsm extends React.Component<IProps, any> {
                     }
                 />
             </div>
-            // <div>
-            //     <Row gutter={16} type="flex" style={{ marginBottom: 16 }}>
-            //         <Col span={8} >
-            //             <Card title="Hierarchical Graph" bordered={false} style={{ overflow: 'auto', height: '100%' }}>
-            //                 <ApolloConsumer>
-            //                     {cl =>
-            //                         <SlizaaTree
-            //                             client={cl}
-            //                             databaseId={this.props.databaseId}
-            //                             hierarchicalGraphId={this.props.hierarchicalGraphId}
-            //                             onSelect={this.onSelect}
-            //                             onExpand={this.onExpand}
-            //                             expandedKeys={[]} />
-            //                     }
-            //                 </ApolloConsumer>
-            //             </Card>
-            //         </Col>
-            //         <Col span={16} >
-            //             <Card title="Dependencies Overview" bordered={false} >
-            //                 <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables} fetchPolicy="no-cache">
-            //                     {({ loading, data }) => {
-
-            //                         if (loading) {
-            //                             return null;
-            //                         }
-
-            //                         if (!data || !data.hierarchicalGraph || !data.hierarchicalGraph.node) {
-            //                             return <div>UNDEFINED - TODO</div>
-            //                         }
-
-            //                         // get  the data
-            //                         const {orderedNodes, cells, stronglyConnectedComponents } = data.hierarchicalGraph.node.children.dependencyMatrix
-
-            //                         return <DSM labels={orderedNodes}
-            //                                     cells={cells}
-            //                                     stronglyConnectedComponents={stronglyConnectedComponents} />
-            //                     }}
-            //                 </Query>
-            //             </Card>
-            //         </Col>
-            //     </Row>
-            //     <Row gutter={16}>
-            //         <Col span={24} >
-            //             <Card title="Dependencies Details" bordered={false} style={{ overflow: 'auto' }}>
-            //                 <ul>
-            //                     {items}
-            //                 </ul>
-            //             </Card>
-            //         </Col>
-            //     </Row>
-            // </div>
         );
     }
 
@@ -170,6 +125,13 @@ export class ViewDsm extends React.Component<IProps, any> {
     private onExpand = (expandedKeys: string[]): void => {
         // tslint:disable-next-line:no-console
         console.log("expanded Keys: " + expandedKeys);
+    }
+
+    private onWidthChanged = (newWidth: number): void => {
+        // tslint:disable-next-line:no-console
+        console.log("newWidth: " + newWidth);
+
+        this.setState({uppderWidth: newWidth});
     }
 }
 

@@ -7,14 +7,10 @@ export interface IProps {
     width: number
     left: JSX.Element
     right: JSX.Element
+    onWidthChanged: (newWidth: number) => void;
 }
 
-export interface IState {
-    resizing: boolean
-    currentWidth: number
-}
-
-export default class HorizontalSplitLayout extends React.Component<IProps, IState> {
+export default class HorizontalSplitLayout extends React.Component<IProps, {}> {
 
     constructor(props: IProps) {
         super(props);
@@ -28,17 +24,17 @@ export default class HorizontalSplitLayout extends React.Component<IProps, IStat
 
     public render() {
         return (
-            <div className="contentFlexContainer" style={{ flexFlow: "row", height: "100%" }}>
-                <div className="item item1" style={{ flex: "0 0 " + this.state.currentWidth + "px" }}>
+            <div className="contentFlexContainer" style={{ flexFlow: "row", height: "100%", overflow: "hidden", backgroundColor: "transparent" }}>
+                <div className="item item1" style={{ flex: "0 0 " + this.props.width + "px", overflow: "hidden" }}>
                     {this.props.left}
                 </div>
                 <DraggableCore
                     onStop={this.dragHandler('onResizeStop')}
                     onStart={this.dragHandler('onResizeStart')}
                     onDrag={this.dragHandler('onResize')} >
-                    <div className="verticalDivider" style={{ width: "10px" }} />
+                    <div className="verticalDivider" style={{ width: "10px", backgroundColor: "transparent" }} />
                 </DraggableCore>
-                <div className="item item2" style={{ flex: "1 0 0px" }}>
+                <div className="item item2" style={{ flex: "1 0 0px", overflow: "hidden" }}>
                     {this.props.right}
                 </div>
             </div>
@@ -47,24 +43,10 @@ export default class HorizontalSplitLayout extends React.Component<IProps, IStat
 
     private dragHandler = (handlerName: string): DraggableEventHandler => {
         return (e: DraggableEvent, data: DraggableData): void | false => {
-
-            const newState: IState = {
-                currentWidth: this.state.currentWidth,
-                resizing: this.state.resizing,
-            };
-
-            if (handlerName === 'onResizeStart') {
-                newState.resizing = true;
-            } else if (handlerName === 'onResizeStop') {
-                newState.resizing = false;
-            } else {
-                const newWidth = this.state.currentWidth + data.deltaX;
-                // Early return if no change after constraints
-                if (newWidth === this.state.currentWidth) { return };
-                newState.currentWidth = newWidth;
-            }
-
-            this.setState(newState);
+            const newWidth = this.props.width + data.deltaX;
+            // Early return if no change after constraints
+            if (newWidth === this.props.width) { return };
+            this.props.onWidthChanged(newWidth);
         }
     }
 }
