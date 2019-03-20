@@ -4,10 +4,12 @@ import { DraggableCore, DraggableData, DraggableEvent, DraggableEventHandler } f
 import './CommonLayout.css';
 
 export interface IProps {
+    id: string
     width: number
     left: JSX.Element
     right: JSX.Element
-    onWidthChanged: (newWidth: number) => void;
+    gutter?: number
+    onWidthChanged: (id: string, newWidth: number) => void;
 }
 
 export default class HorizontalSplitLayout extends React.Component<IProps, {}> {
@@ -32,7 +34,7 @@ export default class HorizontalSplitLayout extends React.Component<IProps, {}> {
                     onStop={this.dragHandler('onResizeStop')}
                     onStart={this.dragHandler('onResizeStart')}
                     onDrag={this.dragHandler('onResize')} >
-                    <div className="verticalDivider" style={{ width: "10px", backgroundColor: "transparent" }} />
+                    <div className="verticalDivider" style={{ width: this.props.gutter ? this.props.gutter : 8 + "px", backgroundColor: "transparent" }} />
                 </DraggableCore>
                 <div className="item item2" style={{ flex: "1 0 0px", overflow: "hidden" }}>
                     {this.props.right}
@@ -46,7 +48,7 @@ export default class HorizontalSplitLayout extends React.Component<IProps, {}> {
             const newWidth = this.props.width + data.deltaX;
             // Early return if no change after constraints
             if (newWidth === this.props.width) { return };
-            this.props.onWidthChanged(newWidth);
+            this.props.onWidthChanged(this.props.id, newWidth);
         }
     }
 }

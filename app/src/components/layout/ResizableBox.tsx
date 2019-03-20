@@ -5,6 +5,7 @@ import './CommonLayout.css';
 
 export interface IProps {
     height: number
+    gutter?: number
     component: JSX.Element
 }
 
@@ -42,7 +43,7 @@ export default class ResizableBox extends React.Component<IProps, IState> {
                     onStop={this.dragHandler('onResizeStop')}
                     onStart={this.dragHandler('onResizeStart')}
                     onDrag={this.dragHandler('onResize')}>
-                    <div className="horizontalDivider" style={{ height: "10px" }} />
+                    <div className="horizontalDivider" style={{ height: this.props.gutter ? this.props.gutter : 8 + "px" }} />
                 </DraggableCore>
             </div>
         );

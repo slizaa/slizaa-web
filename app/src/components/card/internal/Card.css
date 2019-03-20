@@ -1,3 +1,9 @@
 .slizaa-card {
     background-color: white
 }
+
+.slizaa-card-title {
+    font-size: 1rem;
+    padding: 6px 12px;
+    
+}

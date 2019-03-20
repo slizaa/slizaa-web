@@ -22,7 +22,7 @@ interface IProps {
 }
 
 interface IState {
-    uppderWidth: number;
+    treeCardWidth: number;
 }
 
 export class ViewDsm extends React.Component<IProps, IState> {
@@ -30,13 +30,13 @@ export class ViewDsm extends React.Component<IProps, IState> {
     constructor(props: IProps) {
         super(props);
 
-        this.state = { uppderWidth: 200 }
+        this.state = { treeCardWidth: 200 }
     }
 
     public render() {
 
         if (!this.props.hierarchicalGraphId && !this.props.hierarchicalGraphId) {
-            return <h1>NOT CONNECTED</h1>
+            return null
         }
 
         const query = GQ_DSM_FOR_NODE_CHILDREN;
@@ -53,9 +53,9 @@ export class ViewDsm extends React.Component<IProps, IState> {
         return (
 
             <div>
-                <ResizableBox height={500}
+                <ResizableBox height={600}
                     component={
-                        <HorizontalSplitLayout onWidthChanged={this.onWidthChanged} width={this.state.uppderWidth}
+                        <HorizontalSplitLayout id="upper" onWidthChanged={this.onWidthChanged} width={this.state.treeCardWidth}
                             left={
                                 <Card title="Hierarchical Graph" >
                                     <ApolloConsumer>
@@ -97,20 +97,13 @@ export class ViewDsm extends React.Component<IProps, IState> {
                         />
                     }
                 />
-                <ResizableBox height={500}
+                <ResizableBox height={371}
                     component={
-                        <HorizontalSplitLayout onWidthChanged={this.onWidthChanged} width={100}
-                            left={
-                                <div style={{ width: "100px", height: "100px" }}>HURZ 1</div>
-                            }
-                            right={
-                                <Card title="Dependencies Details" >
-                                    <ul>
-                                        {items}
-                                    </ul>
-                                </Card>
-                            }
-                        />
+                        <Card title="Dependencies Details" >
+                            <ul>
+                                {items}
+                            </ul>
+                        </Card>
                     }
                 />
             </div>
@@ -128,11 +121,8 @@ export class ViewDsm extends React.Component<IProps, IState> {
         console.log("expanded Keys: " + expandedKeys);
     }
 
-    private onWidthChanged = (newWidth: number): void => {
-        // tslint:disable-next-line:no-console
-        console.log("newWidth: " + newWidth);
-
-        this.setState({ uppderWidth: newWidth });
+    private onWidthChanged = (id: string, newWidth: number): void => {
+        this.setState({ treeCardWidth: newWidth });
     }
 }
 

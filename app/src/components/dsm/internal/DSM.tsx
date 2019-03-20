@@ -45,7 +45,7 @@ export class DSM extends React.Component<IDsmProps> {
 
     public render() {
         return (
-            <div style={{ width: '100%', overflowX: 'auto', height: '500px', overflowY: 'auto' }}>
+            <div>
                 <canvas ref={ref => (this.canvasRef = ref)} />
             </div>
         );

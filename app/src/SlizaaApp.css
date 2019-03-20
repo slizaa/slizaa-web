@@ -2,6 +2,19 @@
 
 .ant-menu-vertical, .ant-menu-vertical-left {
   border-right: none;
+  /* background-color: #bdc3c7; */
+}
+
+.ant-layout-sider {
+  /* background-color: #bdc3c7; */
+}
+
+.ant-layout-header {
+ background-color:white;
+}
+
+.main-view-sider-logo {
+  /* background-color: #3498db; */
 }
 
 .logo {
@@ -9,13 +22,6 @@
     background: rgba(255,255,255,.2);
     margin: 16px;
   }
-
-.slizaaBox {
-  overflow-x: auto;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  padding: 5px;
-}
 
 .mr5 {
   margin-right: 5px;

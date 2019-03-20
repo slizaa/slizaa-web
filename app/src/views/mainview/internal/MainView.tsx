@@ -39,9 +39,10 @@ export class MainView extends React.Component<IProps, IState> {
   
     return (
       <BrowserRouter>
-        <Layout style={{ minHeight: '100vh' }}>
+        <Layout 
+            style={{ minHeight: '100vh' }}>
           <Sider
-            theme="light"
+            theme="light"            
             collapsible={true}
             collapsed={this.state.collapsed}
             onCollapse={this.onCollapse}
@@ -52,7 +53,9 @@ export class MainView extends React.Component<IProps, IState> {
                 <img src={imageSource} alt="logo" />
               </Link>
             </div>
-            <Menu defaultSelectedKeys={['1']} mode="inline" theme="light">
+            <Menu defaultSelectedKeys={['1']} 
+                  theme="light"
+                  mode="inline" >
               <Menu.Item key="1">
                 <Icon type="pie-chart" />
                 <span>Deshboard</span>
@@ -66,7 +69,7 @@ export class MainView extends React.Component<IProps, IState> {
             </Menu>
           </Sider>
           <Layout>
-            <Layout.Header style={{ background: '#fff', padding: 0 }}>
+            <Layout.Header style={{ padding: 0 }}>
               <Icon
                 className="trigger"
                 type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
@@ -79,7 +82,7 @@ export class MainView extends React.Component<IProps, IState> {
                 onHierarchicalGraphSelect={this.props.dispatchSelectHierarchicalGraph}
               />
             </Layout.Header>
-            <Layout.Content style={{ margin: 8, padding: 8, minHeight: 280 }}>
+            <Layout.Content style={{ padding: 8, minHeight: 280 }}>
               <Route exact={true} path="/" component={ViewDsm} />
               <Route path="/meseros" component={ViewDsm} />
             </Layout.Content>

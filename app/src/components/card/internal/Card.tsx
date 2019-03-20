@@ -18,8 +18,8 @@ export class Card extends React.Component<IProps> {
     public render() {
         return (
             <div className="slizaa-card" style={this.cardStyle}>
-                <div>{this.props.title}</div>
-                <div style={{ width: '100%', height: '100%', overflow: 'auto' }} >{this.props.children}</div>
+                <div className="slizaa-card-title" style={{ flex: "0 0 0px" }}>{this.props.title}</div>
+                <div className="slizaa-card-body" style={{ flex: "1 0 0px", overflow: 'auto' }} >{this.props.children}</div>
             </div>
         );
     }
