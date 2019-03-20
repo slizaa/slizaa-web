@@ -10,3 +10,15 @@
   .ant-tree li .ant-tree-node-content-wrapper {
     padding: 0px 0px;
   }
+
+  .ant-card {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+  }
+
+  .ant-card-body {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+  }

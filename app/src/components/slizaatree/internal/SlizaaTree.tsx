@@ -117,6 +117,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeProp
           onExpand={this.onExpand}
           showIcon={true}
           showLine={false}
+          style={{overflow: "auto"}}
         >
           {this.renderTreeNodes(this.slizaaTreeComponentModel.rootNodes)}
         </Tree>

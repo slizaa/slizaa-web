@@ -1,8 +1,9 @@
-import { Card } from 'antd';
+
 import * as React from 'react';
 import { ApolloConsumer, Query } from 'react-apollo';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { Card } from 'src/components/card';
 import { DSM } from 'src/components/dsm';
 import HorizontalSplitLayout from 'src/components/layout/HorizontalSplitLayout';
 import ResizableBox from 'src/components/layout/ResizableBox';
@@ -56,7 +57,7 @@ export class ViewDsm extends React.Component<IProps, IState> {
                     component={
                         <HorizontalSplitLayout onWidthChanged={this.onWidthChanged} width={this.state.uppderWidth}
                             left={
-                                <Card title="Hierarchical Graph" bordered={false} style={{ overflow: 'none', height: '100%' }}>
+                                <Card title="Hierarchical Graph" >
                                     <ApolloConsumer>
                                         {cl =>
                                             <SlizaaTree
@@ -71,7 +72,7 @@ export class ViewDsm extends React.Component<IProps, IState> {
                                 </Card>
                             }
                             right={
-                                <Card title="Dependencies Overview" bordered={false} style={{ overflow: 'none', height: '100%' }} >
+                                <Card title="Dependencies Overview" >
                                     <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables} fetchPolicy="no-cache">
                                         {({ loading, data }) => {
 
@@ -103,7 +104,7 @@ export class ViewDsm extends React.Component<IProps, IState> {
                                 <div style={{ width: "100px", height: "100px" }}>HURZ 1</div>
                             }
                             right={
-                                <Card title="Dependencies Details" bordered={false} style={{ overflow: 'auto' }}>
+                                <Card title="Dependencies Details" >
                                     <ul>
                                         {items}
                                     </ul>
@@ -131,7 +132,7 @@ export class ViewDsm extends React.Component<IProps, IState> {
         // tslint:disable-next-line:no-console
         console.log("newWidth: " + newWidth);
 
-        this.setState({uppderWidth: newWidth});
+        this.setState({ uppderWidth: newWidth });
     }
 }
 
