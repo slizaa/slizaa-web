@@ -50,7 +50,7 @@ export class ViewDsm extends React.Component<IProps, any> {
                     component={
                         <HorizontalSplitLayout width={100}
                             left={
-                                <Card title="Hierarchical Graph" bordered={false} style={{ overflow: 'auto', height: '100%' }}>
+                                <Card title="Hierarchical Graph" bordered={false} style={{ overflow: 'none', height: '100%' }}>
                                     <ApolloConsumer>
                                         {cl =>
                                             <SlizaaTree
@@ -65,7 +65,7 @@ export class ViewDsm extends React.Component<IProps, any> {
                                 </Card>
                             }
                             right={
-                                <Card title="Dependencies Overview" bordered={false} >
+                                <Card title="Dependencies Overview" bordered={false} style={{ overflow: 'none', height: '100%' }} >
                                     <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables} fetchPolicy="no-cache">
                                         {({ loading, data }) => {
 

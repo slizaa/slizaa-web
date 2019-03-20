@@ -41,7 +41,7 @@ export class MainView extends React.Component<IProps, IState> {
       <BrowserRouter>
         <Layout style={{ minHeight: '100vh' }}>
           <Sider
-            theme="dark"
+            theme="light"
             collapsible={true}
             collapsed={this.state.collapsed}
             onCollapse={this.onCollapse}
@@ -52,7 +52,7 @@ export class MainView extends React.Component<IProps, IState> {
                 <img src={imageSource} alt="logo" />
               </Link>
             </div>
-            <Menu defaultSelectedKeys={['1']} mode="inline" theme="dark">
+            <Menu defaultSelectedKeys={['1']} mode="inline" theme="light">
               <Menu.Item key="1">
                 <Icon type="pie-chart" />
                 <span>Deshboard</span>
