@@ -139,10 +139,6 @@ export class ViewDsm extends React.Component<IProps, IState> {
             this.setState({ lowerHeight: newHeight });
         }
     }
-
-    private saveToLocalStorage = (state: IState) => {
-        //
-    }
 }
 
 const mapStateToProps = (state: IAppState) => {

@@ -3,7 +3,7 @@ import { setupCanvas } from './DpiFixer';
 import './DSM.css';
 import { DefaultColorScheme, IDsmColorScheme } from './IDsmColorScheme';
 
-export interface IDsmProps {
+export interface IProps {
     labels: IDsmLabel[];
     cells: IDsmCell[];
     stronglyConnectedComponents: IDsmStronglyConnectedComponent[];
@@ -24,7 +24,7 @@ export interface IDsmStronglyConnectedComponent {
     nodePositions: number[];
 }
 
-export class DSM extends React.Component<IDsmProps> {
+export class DSM extends React.Component<IProps> {
 
     private canvasRef: HTMLCanvasElement | null;
 
@@ -35,6 +35,18 @@ export class DSM extends React.Component<IDsmProps> {
     public componentDidMount() {
         if (this.canvasRef) {
             this.renderingContext = this.canvasRef.getContext("2d")
+            if ( this.renderingContext ) {
+                this.renderingContext.canvas.onmousemove = (event) => { 
+                    if ( this.renderingContext ) {
+                    const rect = this.renderingContext.canvas.getBoundingClientRect();
+                       // tslint:disable-next-line:no-console
+                    console.log("move: " + (event.clientX - rect.left) + " : " + (event.clientY - rect.top));
+                } 
+                }
+                // tslint:disable-next-line:no-console
+                this.renderingContext.canvas.onclick = (event) => console.log("click: " + event);
+                // https://stackoverflow.com/questions/17130395/real-mouse-position-in-canvas
+            }
         }
         this.draw();
     }
