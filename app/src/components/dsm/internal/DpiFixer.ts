@@ -1,6 +1,7 @@
 // See: http://www.html5rocks.com/en/tutorials/canvas/hidpi/
 // See: 
 export function setupCanvas(canvas: HTMLCanvasElement, context: any, customWidth?: number, customHeight?: number): number {
+
     const width = customWidth ||
         canvas.width || // attr, eg: <canvas width='400'>
         canvas.clientWidth; // keep existing width
