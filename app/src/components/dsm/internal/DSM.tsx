@@ -177,9 +177,6 @@ export class DSM extends React.Component<IProps, IState> {
             this.drawMHorizontalBar(this.renderingContext, width, height, sccNodePositions);
             this.drawMVerticalBar(this.renderingContext, width, height, sccNodePositions);
             this.drawMatrix(this.renderingContext, width, height);
-
-            //
-            // this.drawMarkedItems(this.renderingContext, width, height)
         }
     }
 
@@ -195,14 +192,14 @@ export class DSM extends React.Component<IProps, IState> {
             // compute the cycles
             const isInCycle = sccNodePositions.includes(i);
 
-            // // draw the "even" marker
-            // if (isInCycle || i % 2 === 0) {
+            // draw the "even" marker
+            if (isInCycle || i % 2 === 0) {
 
-            //     // draw the background
-            //     renderingContext2D.fillStyle = isInCycle ? this.colorScheme.getCycleSideMarkerColor() : this.colorScheme.getSideMarkerEvenColor();
-            //     renderingContext2D.fillRect(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i), 0,
-            //         this.getHorizontalSliceSize(i + 1) - this.getHorizontalSliceSize(i), this.state.horizontalSideMarkerHeight);
-            // }
+                // draw the background
+                renderingContext2D.fillStyle = isInCycle ? this.colorScheme.getCycleSideMarkerColor() : this.colorScheme.getSideMarkerEvenColor();
+                renderingContext2D.fillRect(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i), 0,
+                    this.getHorizontalSliceSize(i + 1) - this.getHorizontalSliceSize(i), this.state.horizontalSideMarkerHeight);
+            }
 
             //
             renderingContext2D.strokeStyle = isInCycle && sccNodePositions.includes(i - 1) ? this.colorScheme.getCycleSideMarkerSeparatorColor() : this.colorScheme.getSideMarkerSeparatorColor();
@@ -232,14 +229,14 @@ export class DSM extends React.Component<IProps, IState> {
             //
             const isInCycle = sccNodePositions.includes(i);
 
-            // // draw the "even" marker
-            // if (isInCycle || i % 2 === 0) {
+            // draw the "even" marker
+            if (isInCycle || i % 2 === 0) {
 
-            //     // draw the background
-            //     renderingContext2D.fillStyle = isInCycle ? this.colorScheme.getCycleSideMarkerColor() : this.colorScheme.getSideMarkerEvenColor();
-            //     renderingContext2D.fillRect(0, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(i), this.state.verticalSideMarkerWidth,
-            //         this.getVerticalSliceSize(i + 1) - this.getVerticalSliceSize(i));
-            // }
+                // draw the background
+                renderingContext2D.fillStyle = isInCycle ? this.colorScheme.getCycleSideMarkerColor() : this.colorScheme.getSideMarkerEvenColor();
+                renderingContext2D.fillRect(0, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(i), this.state.verticalSideMarkerWidth,
+                    this.getVerticalSliceSize(i + 1) - this.getVerticalSliceSize(i));
+            }
 
             // draw the line
             renderingContext2D.strokeStyle = isInCycle && sccNodePositions.includes(i - 1) ? this.colorScheme.getCycleSideMarkerSeparatorColor() : this.colorScheme.getSideMarkerSeparatorColor();
@@ -270,9 +267,6 @@ export class DSM extends React.Component<IProps, IState> {
 
         const horizontalSliceSize = this.getHorizontalSliceSize;
         const verticalSliceSize = this.getVerticalSliceSize;
-
-        // scc node positions
-        const sccNodePositions = [].concat.apply([], this.props.stronglyConnectedComponents.map(scc => scc.nodePositions));
 
         // draw the background for the complete matrix
         renderingContext2D.fillStyle = this.colorScheme.getMatrixBackgroundColor();
