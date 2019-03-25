@@ -41,16 +41,18 @@ export class DSM extends React.Component<IProps, IState> {
 
     private colorScheme: IDsmColorScheme = new DefaultColorScheme;
 
-    private markedX: number | undefined;
-    private markedY: number | undefined;
+    private mouseDown: boolean;
+    private currentMarkedX: number | undefined;
+    private currentMarkedY: number | undefined;
+    private newMarkedX: number | undefined;
+    private newMarkedY: number | undefined;
+    private sccNodePositions: number[];
 
     constructor(props: IProps) {
         super(props);
 
         this.state = {
             horizontalSideMarkerHeight: 50,
-            // markedCellX: undefined,
-            // markedCellY: -1,
             verticalSideMarkerWidth: 100,
         }
     }
@@ -65,11 +67,18 @@ export class DSM extends React.Component<IProps, IState> {
 
             if (this.markedCellLayerrenderingContext) {
 
-                // this.markedCellLayerrenderingContext.canvas.onmouseleave = ((event: MouseEvent) => {
-                //     this.setState({ markedCellX: undefined, markedCellY: undefined });
-                // }).bind(this)
+                this.markedCellLayerrenderingContext.canvas.onmouseenter = ((event: MouseEvent) => {
+                    console.log("onmouseenter");
+                    this.mouseDown = true;
+                    requestAnimationFrame(this.updateMarkedLayer);
+                }).bind(this)
 
-// TODO: https://johnresig.com/blog/how-javascript-timers-work/
+                this.markedCellLayerrenderingContext.canvas.onmouseleave = ((event: MouseEvent) => {
+                    this.mouseDown = false;
+                    this.newMarkedX = undefined;
+                    this.newMarkedY = undefined;
+                    requestAnimationFrame(this.updateMarkedLayer);
+                }).bind(this)
 
                 this.markedCellLayerrenderingContext.canvas.onmousemove = ((event: MouseEvent) => {
 
@@ -79,12 +88,10 @@ export class DSM extends React.Component<IProps, IState> {
                     if (x < 0 || x >= this.props.labels.length) { x = undefined }
                     if (y < 0 || y >= this.props.labels.length) { y = undefined }
 
-                    if (this.markedX !== x || this.markedY !== y) {
-                        this.updateMarkedLayer(x, y);
+                    if (this.currentMarkedX !== x || this.currentMarkedY !== y) {
+                        this.newMarkedX = x;
+                        this.newMarkedY = y;
                     }
-
-                    // this.updateMarkedLayer(x, y);
-
                 }).bind(this)
 
                 //     // tslint:disable-next-line:no-console
@@ -109,29 +116,36 @@ export class DSM extends React.Component<IProps, IState> {
         );
     }
 
-    private updateMarkedLayer(x: number | undefined, y: number | undefined) {
+    private updateMarkedLayer = () => {
 
+        // return immediately if nothing has
+        if (this.currentMarkedX === this.newMarkedX && this.currentMarkedY === this.newMarkedY) {
+            if (this.mouseDown) {
+                requestAnimationFrame(this.updateMarkedLayer);
+            }
+            return;
+        }
 
-
+        //
         if (this.markedCellLayerCanvasRef && this.markedCellLayerrenderingContext) {
 
             // clear rect
-            if (this.markedX !== undefined && this.markedY !== undefined) {
+            if (this.currentMarkedX !== undefined && this.currentMarkedY !== undefined) {
 
                 this.markedCellLayerrenderingContext.clearRect(
-                    this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.markedX),
-                    this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.markedY),
+                    this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.currentMarkedX),
+                    this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.currentMarkedY),
                     this.getBoxSize().getHorizontalBoxSize(),
                     this.getBoxSize().getVerticalBoxSize());
             }
 
             //
-            this.markedX = x;
-            this.markedY = y;
+            this.currentMarkedX = this.newMarkedX;
+            this.currentMarkedY = this.newMarkedY;
 
-            if (x !== undefined && y !== undefined) {
+            if (this.currentMarkedX !== undefined && this.currentMarkedY !== undefined) {
 
-                this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getMatrixMarkedCellColor();
+                
 
                 // renderingContext2D.fillStyle = this.colorScheme.getMatrixMarkedCellColor();
                 // if (this.state.markedCellX !== undefined && this.state.markedCellY !== undefined) {
@@ -142,16 +156,21 @@ export class DSM extends React.Component<IProps, IState> {
                 //             this.colorScheme.getCycleMatrixMarkedColumnRowColor() :
                 //             this.colorScheme.getMatrixMarkedColumnRowColor();
 
+                this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getMatrixMarkedCellColor();
                 this.markedCellLayerrenderingContext.fillRect(
-                    this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x),
-                    this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y),
-                    this.getBoxSize().getHorizontalBoxSize(),
-                    this.getBoxSize().getVerticalBoxSize());
+                    this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.currentMarkedX) + 1,
+                    this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.currentMarkedY) + 1,
+                    this.getBoxSize().getHorizontalBoxSize() - 2,
+                    this.getBoxSize().getVerticalBoxSize() - 2);
             }
+        }
+
+        if (this.mouseDown) {
+            requestAnimationFrame(this.updateMarkedLayer);
         }
     }
 
-    private draw() {
+    private draw = () => {
 
         if (this.canvasRef && this.renderingContext && this.markedCellLayerCanvasRef && this.markedCellLayerrenderingContext) {
 
@@ -171,11 +190,11 @@ export class DSM extends React.Component<IProps, IState> {
             this.setupCanvas();
 
             // scc node positions
-            const sccNodePositions = [].concat.apply([], this.props.stronglyConnectedComponents.map(scc => scc.nodePositions));
+            this.sccNodePositions = [].concat.apply([], this.props.stronglyConnectedComponents.map(scc => scc.nodePositions));
 
             //
-            this.drawMHorizontalBar(this.renderingContext, width, height, sccNodePositions);
-            this.drawMVerticalBar(this.renderingContext, width, height, sccNodePositions);
+            this.drawMHorizontalBar(this.renderingContext, width, height, this.sccNodePositions);
+            this.drawMVerticalBar(this.renderingContext, width, height, this.sccNodePositions);
             this.drawMatrix(this.renderingContext, width, height);
         }
     }
