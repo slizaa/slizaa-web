@@ -16,6 +16,8 @@ export interface IProps {
     stronglyConnectedComponents: IDsmStronglyConnectedComponent[];
     horizontalBoxSize?: number;
     verticalBoxSize?: number;
+    initialHorizontalSideMarkerHeight?: number;
+    intialVerticalSideMarkerWidth?: number;
 }
 
 export interface IDsmLabel {
@@ -73,7 +75,6 @@ export class DSM extends React.Component<IProps, IState> {
             if (this.markedCellLayerrenderingContext) {
 
                 this.markedCellLayerrenderingContext.canvas.onmouseenter = ((event: MouseEvent) => {
-                    console.log("onmouseenter");
                     this.mouseDown = true;
                     requestAnimationFrame(this.updateMarkedLayer);
                 }).bind(this)
@@ -98,11 +99,6 @@ export class DSM extends React.Component<IProps, IState> {
                         this.newMarkedY = y;
                     }
                 }).bind(this)
-
-                //     // tslint:disable-next-line:no-console
-                //     this.renderingContext.canvas.onclick = (event) => console.log("click: " + event);
-                //     // https://stackoverflow.com/questions/17130395/real-mouse-position-in-canvas
-                // }
             }
             this.draw();
         }
@@ -426,13 +422,15 @@ export class DSM extends React.Component<IProps, IState> {
                 this.getBoxSize().getHorizontalBoxSize(),
                 this.getBoxSize().getVerticalBoxSize());
 
-            this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getMatrixTextColor();
-            this.markedCellLayerrenderingContext.font = this.FONT;
-            this.markedCellLayerrenderingContext.textAlign = "center";
-            this.markedCellLayerrenderingContext.textBaseline = "middle";
-            this.markedCellLayerrenderingContext.fillText(this.matrixLabels[x][y],
-                this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x) + this.getBoxSize().getHorizontalBoxSize() / 2,
-                this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y) + this.getBoxSize().getVerticalBoxSize() / 2);
+            if (x !== y) {
+                this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getMatrixTextColor();
+                this.markedCellLayerrenderingContext.font = this.FONT;
+                this.markedCellLayerrenderingContext.textAlign = "center";
+                this.markedCellLayerrenderingContext.textBaseline = "middle";
+                this.markedCellLayerrenderingContext.fillText(this.matrixLabels[x][y],
+                    this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x) + this.getBoxSize().getHorizontalBoxSize() / 2,
+                    this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y) + this.getBoxSize().getVerticalBoxSize() / 2);
+            }
         }
     }
 
@@ -472,8 +470,7 @@ export class DSM extends React.Component<IProps, IState> {
     private isCellInCycle = (x: number, y: number) => {
 
         if (this.props.stronglyConnectedComponents) {
-            for (let index = 0; index < this.props.stronglyConnectedComponents.length; index++) {
-                const scc = this.props.stronglyConnectedComponents[index];
+            for (const scc of this.props.stronglyConnectedComponents) {
                 if (scc.nodePositions.includes(x) && scc.nodePositions.includes(y)) {
                     return true;
                 }

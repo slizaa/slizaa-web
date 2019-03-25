@@ -17,7 +17,7 @@ export default class ResizableBox extends React.Component<IProps, {}> {
         return (
             <div style={{ overflow: "hidden", backgroundColor: "transparent" }}>
                 <div style={{ height: this.props.height + "px", overflow: "hidden", backgroundColor: "transparent" }}>
-                    {React.cloneElement(this.props.component, { style: { height: this.props.height } })}
+                   {this.props.component}
                 </div>
                 <DraggableCore
                     onStop={this.dragHandler('onResizeStop')}
