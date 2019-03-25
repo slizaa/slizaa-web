@@ -14,6 +14,8 @@ export interface IProps {
     labels: IDsmLabel[];
     cells: IDsmCell[];
     stronglyConnectedComponents: IDsmStronglyConnectedComponent[];
+    horizontalBoxSize?: number;
+    verticalBoxSize?: number;
 }
 
 export interface IDsmLabel {
@@ -33,6 +35,8 @@ export interface IDsmStronglyConnectedComponent {
 
 export class DSM extends React.Component<IProps, IState> {
 
+    private readonly FONT = "12px Arial";
+
     private canvasRef: HTMLCanvasElement | null;
     private renderingContext: CanvasRenderingContext2D | null;
 
@@ -47,6 +51,7 @@ export class DSM extends React.Component<IProps, IState> {
     private newMarkedX: number | undefined;
     private newMarkedY: number | undefined;
     private sccNodePositions: number[];
+    private matrixLabels: string[][];
 
     constructor(props: IProps) {
         super(props);
@@ -116,60 +121,6 @@ export class DSM extends React.Component<IProps, IState> {
         );
     }
 
-    private updateMarkedLayer = () => {
-
-        // return immediately if nothing has
-        if (this.currentMarkedX === this.newMarkedX && this.currentMarkedY === this.newMarkedY) {
-            if (this.mouseDown) {
-                requestAnimationFrame(this.updateMarkedLayer);
-            }
-            return;
-        }
-
-        //
-        if (this.markedCellLayerCanvasRef && this.markedCellLayerrenderingContext) {
-
-            // clear rect
-            if (this.currentMarkedX !== undefined && this.currentMarkedY !== undefined) {
-
-                this.markedCellLayerrenderingContext.clearRect(
-                    this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.currentMarkedX),
-                    this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.currentMarkedY),
-                    this.getBoxSize().getHorizontalBoxSize(),
-                    this.getBoxSize().getVerticalBoxSize());
-            }
-
-            //
-            this.currentMarkedX = this.newMarkedX;
-            this.currentMarkedY = this.newMarkedY;
-
-            if (this.currentMarkedX !== undefined && this.currentMarkedY !== undefined) {
-
-                
-
-                // renderingContext2D.fillStyle = this.colorScheme.getMatrixMarkedCellColor();
-                // if (this.state.markedCellX !== undefined && this.state.markedCellY !== undefined) {
-
-
-                //         // draw column
-                //         renderingContext2D.fillStyle = sccNodePositions.includes(this.state.markedCellX) || sccNodePositions.includes(this.state.markedCellY) ?
-                //             this.colorScheme.getCycleMatrixMarkedColumnRowColor() :
-                //             this.colorScheme.getMatrixMarkedColumnRowColor();
-
-                this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getMatrixMarkedCellColor();
-                this.markedCellLayerrenderingContext.fillRect(
-                    this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.currentMarkedX) + 1,
-                    this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.currentMarkedY) + 1,
-                    this.getBoxSize().getHorizontalBoxSize() - 2,
-                    this.getBoxSize().getVerticalBoxSize() - 2);
-            }
-        }
-
-        if (this.mouseDown) {
-            requestAnimationFrame(this.updateMarkedLayer);
-        }
-    }
-
     private draw = () => {
 
         if (this.canvasRef && this.renderingContext && this.markedCellLayerCanvasRef && this.markedCellLayerrenderingContext) {
@@ -189,8 +140,15 @@ export class DSM extends React.Component<IProps, IState> {
 
             this.setupCanvas();
 
-            // scc node positions
+            // create structures
             this.sccNodePositions = [].concat.apply([], this.props.stronglyConnectedComponents.map(scc => scc.nodePositions));
+            this.matrixLabels = new Array(this.props.labels.length);
+            for (let index = 0; index < this.matrixLabels.length; index++) {
+                this.matrixLabels[index] = new Array(this.props.labels.length);
+            }
+            this.props.cells.forEach(cell => {
+                this.matrixLabels[cell.row][cell.column] = '' + cell.value;
+            });
 
             //
             this.drawMHorizontalBar(this.renderingContext, width, height, this.sccNodePositions);
@@ -226,6 +184,27 @@ export class DSM extends React.Component<IProps, IState> {
             renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i), 0);
             renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i), this.state.horizontalSideMarkerHeight);
             renderingContext2D.stroke();
+
+            // DRAW HORIZONTAL TEXT
+            renderingContext2D.save();
+
+            // CLIPPING
+            renderingContext2D.beginPath();
+            renderingContext2D.rect(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i), 0,
+                this.getHorizontalSliceSize(i + 1) - this.getHorizontalSliceSize(i), this.state.horizontalSideMarkerHeight);
+            renderingContext2D.clip();
+
+            // ROTATE
+            renderingContext2D.translate(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i) + this.getBoxSize().getHorizontalBoxSize() / 2, 10);
+            renderingContext2D.rotate(1 * Math.PI / 2);
+
+            renderingContext2D.fillStyle = this.colorScheme.getSideMarkerTextColor();
+            renderingContext2D.font = this.FONT;
+            renderingContext2D.textAlign = "left";
+            renderingContext2D.textBaseline = "middle";
+            renderingContext2D.fillText(this.props.labels[i].text, 0, 0);
+
+            renderingContext2D.restore();
         }
 
         // draw the last line
@@ -266,7 +245,7 @@ export class DSM extends React.Component<IProps, IState> {
 
             // draw the text
             renderingContext2D.fillStyle = this.colorScheme.getSideMarkerTextColor();
-            renderingContext2D.font = "14px Arial";
+            renderingContext2D.font = this.FONT;
             renderingContext2D.textAlign = "center";
             renderingContext2D.textBaseline = "middle";
             renderingContext2D.fillText(this.props.labels[i].text,
@@ -317,64 +296,9 @@ export class DSM extends React.Component<IProps, IState> {
             }
         });
 
-
-
-        ///
-
-        // renderingContext2D.fillStyle = this.colorScheme.getMatrixMarkedCellColor();
-        // if (this.state.markedCellX !== undefined && this.state.markedCellY !== undefined) {
-
-
-        //         // draw column
-        //         renderingContext2D.fillStyle = sccNodePositions.includes(this.state.markedCellX) || sccNodePositions.includes(this.state.markedCellY) ?
-        //             this.colorScheme.getCycleMatrixMarkedColumnRowColor() :
-        //             this.colorScheme.getMatrixMarkedColumnRowColor();
-
-        //             renderingContext2D.fillRect(this.state.verticalSideMarkerWidth + horizontalSliceSize(this.state.markedCellX ), this.state.horizontalSideMarkerHeight,
-        //             horizontalSliceSize(this.state.markedCellX + 1) - horizontalSliceSize(this.state.markedCellX), verticalSliceSize(this.state.markedCellY + 1));
-
-        // // draw row
-        // graphics.fillRectangle(getHorizontalSliceSize(_x), 0,
-        //         getHorizontalSliceSize(_x + 1) - getHorizontalSliceSize(_x) + 1, getVerticalSliceSize(_y + 1));
-
-        // // draw marked cell
-        // if (_dsmContentProvider.isInCycle(_x, _y)) {
-        //     graphics.setBackgroundColor(getMatrixConfiguration().getCycleMatrixMarkedCellColor());
-        // } else {
-        //     graphics.setBackgroundColor(getMatrixConfiguration().getMatrixMarkedCellColor());
-        // }
-        // graphics.fillRectangle(getHorizontalSliceSize(_x), getVerticalSliceSize(_y),
-        //         getHorizontalSliceSize(_x + 1) - getHorizontalSliceSize(_x),
-        //         getVerticalSliceSize(_y + 1) - getVerticalSliceSize(_y));
-        // graphics.fillRectangle(getHorizontalSliceSize(_y), getVerticalSliceSize(_x),
-        //         getHorizontalSliceSize(_y + 1) - getHorizontalSliceSize(_y),
-        //         getVerticalSliceSize(_x + 1) - getVerticalSliceSize(_x));
-
-
-        /////
-
-
-        // renderingContext2D.fillRect(this.getHorizontalSliceSize(this.state.markedCellX) + 1, this.getVerticalSliceSize(this.state.markedCellY) + 1,
-        //     this.getHorizontalSliceSize(this.state.markedCellX + 1) - (this.getHorizontalSliceSize(this.state.markedCellX) + 2),
-        //     this.getVerticalSliceSize(this.state.markedCellY + 1) - (this.getVerticalSliceSize(this.state.markedCellY) + 2));
-
-        // // draw the text
-        // renderingContext2D.fillStyle = this.colorScheme.getMatrixTextColor();
-        // renderingContext2D.font = "14px Arial";
-        // renderingContext2D.textAlign = "center";
-        // renderingContext2D.textBaseline = "middle";
-        // renderingContext2D.fillText('BU', this.getHorizontalSliceSize(this.state.markedCellX) + this.getBoxSize().getHorizontalBoxSize() / 2,
-        //     this.getVerticalSliceSize(this.state.markedCellY) + this.getBoxSize().getVerticalBoxSize() / 2);
-
-        // }
-
-        //////
-        ///
-
-
         // draw the text
         renderingContext2D.fillStyle = this.colorScheme.getMatrixTextColor();
-        renderingContext2D.font = "14px Arial";
+        renderingContext2D.font = this.FONT;
         this.props.cells.forEach(item => {
             if (item.row !== item.column) {
                 if (item.value) {
@@ -389,55 +313,127 @@ export class DSM extends React.Component<IProps, IState> {
 
         // draw the separator lines
         renderingContext2D.strokeStyle = this.colorScheme.getMatrixSeparatorColor();
+        renderingContext2D.beginPath();
         for (let index = 0; index <= this.props.labels.length; index++) {
 
-            renderingContext2D.beginPath();
             renderingContext2D.moveTo(this.state.verticalSideMarkerWidth, this.state.horizontalSideMarkerHeight + verticalSliceSize(index));
             renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + this.getBoxSize().getHorizontalBoxSize() * this.props.labels.length, this.state.horizontalSideMarkerHeight + verticalSliceSize(index));
-            renderingContext2D.stroke();
 
-            renderingContext2D.beginPath();
             renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(index), this.state.horizontalSideMarkerHeight);
             renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(index), this.state.horizontalSideMarkerHeight + this.getBoxSize().getVerticalBoxSize() * this.props.labels.length);
-            renderingContext2D.stroke();
         }
+        renderingContext2D.stroke();
 
         // draw the cycle separator lines
         renderingContext2D.strokeStyle = this.colorScheme.getCycleSideMarkerSeparatorColor();
+        renderingContext2D.beginPath();
+
         this.props.stronglyConnectedComponents.forEach(cycle => {
+            for (const position of cycle.nodePositions) {
 
-            // extract the node positions
-            const nodePositions = cycle.nodePositions;
-            for (const position of nodePositions) {
-                renderingContext2D.beginPath();
                 renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(position),
-                    this.state.horizontalSideMarkerHeight + verticalSliceSize(nodePositions[0]));
+                    this.state.horizontalSideMarkerHeight + verticalSliceSize(cycle.nodePositions[0]));
                 renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(position),
-                    this.state.horizontalSideMarkerHeight + verticalSliceSize(nodePositions[nodePositions.length - 1] + 1));
-                renderingContext2D.stroke();
+                    this.state.horizontalSideMarkerHeight + verticalSliceSize(cycle.nodePositions[cycle.nodePositions.length - 1] + 1));
 
-                renderingContext2D.beginPath();
-                renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(nodePositions[0]),
+                renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(cycle.nodePositions[0]),
                     this.state.horizontalSideMarkerHeight + verticalSliceSize(position));
-                renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(nodePositions[nodePositions.length - 1] + 1),
+                renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(cycle.nodePositions[cycle.nodePositions.length - 1] + 1),
                     this.state.horizontalSideMarkerHeight + verticalSliceSize(position));
-                renderingContext2D.stroke();
             }
 
-            renderingContext2D.beginPath();
-            renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(nodePositions[nodePositions.length - 1] + 1),
-                this.state.horizontalSideMarkerHeight + verticalSliceSize(nodePositions[0]));
-            renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(nodePositions[nodePositions.length - 1] + 1),
-                this.state.horizontalSideMarkerHeight + verticalSliceSize(nodePositions[nodePositions.length - 1] + 1));
-            renderingContext2D.stroke();
+            renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(cycle.nodePositions[cycle.nodePositions.length - 1] + 1),
+                this.state.horizontalSideMarkerHeight + verticalSliceSize(cycle.nodePositions[0]));
+            renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(cycle.nodePositions[cycle.nodePositions.length - 1] + 1),
+                this.state.horizontalSideMarkerHeight + verticalSliceSize(cycle.nodePositions[cycle.nodePositions.length - 1] + 1));
 
-            renderingContext2D.beginPath();
-            renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(nodePositions[0]),
-                this.state.horizontalSideMarkerHeight + verticalSliceSize(nodePositions[nodePositions.length - 1] + 1));
-            renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(nodePositions[nodePositions.length - 1] + 1),
-                this.state.horizontalSideMarkerHeight + verticalSliceSize(nodePositions[nodePositions.length - 1] + 1));
+            renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(cycle.nodePositions[0]),
+                this.state.horizontalSideMarkerHeight + verticalSliceSize(cycle.nodePositions[cycle.nodePositions.length - 1] + 1));
+            renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + horizontalSliceSize(cycle.nodePositions[cycle.nodePositions.length - 1] + 1),
+                this.state.horizontalSideMarkerHeight + verticalSliceSize(cycle.nodePositions[cycle.nodePositions.length - 1] + 1));
+
             renderingContext2D.stroke();
         });
+    }
+
+    private updateMarkedLayer = () => {
+
+        // only redraw on change
+        if (this.currentMarkedX !== this.newMarkedX || this.currentMarkedY !== this.newMarkedY) {
+
+            //
+            if (this.markedCellLayerCanvasRef && this.markedCellLayerrenderingContext) {
+
+                // clear rect
+                if (this.currentMarkedX !== undefined && this.currentMarkedY !== undefined) {
+                    // Store the current transformation matrix
+                    this.markedCellLayerrenderingContext.save();
+
+                    // Use the identity matrix while clearing the canvas
+                    this.markedCellLayerrenderingContext.setTransform(1, 0, 0, 1, 0, 0);
+                    this.markedCellLayerrenderingContext.clearRect(0, 0, this.markedCellLayerrenderingContext.canvas.width, this.markedCellLayerrenderingContext.canvas.height);
+
+                    // Restore the transform
+                    this.markedCellLayerrenderingContext.restore();
+                }
+
+                //
+                this.currentMarkedX = this.newMarkedX;
+                this.currentMarkedY = this.newMarkedY;
+
+                //
+                if (this.currentMarkedX !== undefined && this.currentMarkedY !== undefined) {
+
+                    for (let index = 0; index <= this.currentMarkedX; index++) {
+                        this.markCell(index, this.currentMarkedY);
+                    }
+                    for (let index = 0; index <= this.currentMarkedY; index++) {
+                        this.markCell(this.currentMarkedX, index);
+                    }
+                    this.markCell(this.currentMarkedY, this.currentMarkedX);
+
+                    // vertical bar
+                    this.markedCellLayerrenderingContext.fillStyle = this.isLabelInCycle(this.currentMarkedY) ? this.colorScheme.getCycleSideMarkerMarkedColor() : this.colorScheme.getSideMarkerMarkedColor();
+                    this.markedCellLayerrenderingContext.fillRect(0,
+                        this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.currentMarkedY),
+                        this.state.verticalSideMarkerWidth,
+                        this.getVerticalSliceSize(this.currentMarkedY + 1) - this.getVerticalSliceSize(this.currentMarkedY));
+
+                    this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getSideMarkerTextColor();
+                    this.markedCellLayerrenderingContext.font = this.FONT;
+                    this.markedCellLayerrenderingContext.textAlign = "center";
+                    this.markedCellLayerrenderingContext.textBaseline = "middle";
+                    this.markedCellLayerrenderingContext.fillText(this.props.labels[this.currentMarkedY].text,
+                        this.state.verticalSideMarkerWidth / 2,
+                        this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.currentMarkedY) + this.getBoxSize().getVerticalBoxSize() / 2);
+                }
+            }
+        }
+
+        if (this.mouseDown) {
+            requestAnimationFrame(this.updateMarkedLayer);
+        }
+    }
+
+    private markCell = (x: number, y: number) => {
+
+        if (this.markedCellLayerrenderingContext) {
+
+            this.markedCellLayerrenderingContext.fillStyle = this.isCellInCycle(x, y) ? this.colorScheme.getCycleMatrixMarkedCellColor() : this.colorScheme.getMatrixMarkedCellColor();
+            this.markedCellLayerrenderingContext.fillRect(
+                this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x),
+                this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y),
+                this.getBoxSize().getHorizontalBoxSize(),
+                this.getBoxSize().getVerticalBoxSize());
+
+            this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getMatrixTextColor();
+            this.markedCellLayerrenderingContext.font = this.FONT;
+            this.markedCellLayerrenderingContext.textAlign = "center";
+            this.markedCellLayerrenderingContext.textBaseline = "middle";
+            this.markedCellLayerrenderingContext.fillText(this.matrixLabels[x][y],
+                this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x) + this.getBoxSize().getHorizontalBoxSize() / 2,
+                this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y) + this.getBoxSize().getVerticalBoxSize() / 2);
+        }
     }
 
     private setupCanvas = () => {
@@ -453,21 +449,37 @@ export class DSM extends React.Component<IProps, IState> {
         return this.getBoxSize().getHorizontalBoxSize() * count;
     }
 
-	/**
-	 * <p>
-	 * </p>
-	 * 
-	 * @param count
-	 * @return
-	 */
     private getVerticalSliceSize = (count: number) => {
         return this.getBoxSize().getVerticalBoxSize() * count;
     }
 
     private getBoxSize = () => {
         return {
-            getHorizontalBoxSize: () => 50,
-            getVerticalBoxSize: () => 40
+            getHorizontalBoxSize: () => this.props.horizontalBoxSize ? this.props.horizontalBoxSize : 25,
+            getVerticalBoxSize: () => this.props.verticalBoxSize ? this.props.verticalBoxSize : 25
         };
+    }
+
+    private isLabelInCycle = (index: number) => {
+
+        if (this.sccNodePositions === undefined || this.sccNodePositions === null) {
+            this.sccNodePositions = [].concat.apply([], this.props.stronglyConnectedComponents.map(scc => scc.nodePositions));
+        }
+
+        return this.sccNodePositions.includes(index);
+    }
+
+    private isCellInCycle = (x: number, y: number) => {
+
+        if (this.props.stronglyConnectedComponents) {
+            for (let index = 0; index < this.props.stronglyConnectedComponents.length; index++) {
+                const scc = this.props.stronglyConnectedComponents[index];
+                if (scc.nodePositions.includes(x) && scc.nodePositions.includes(y)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
