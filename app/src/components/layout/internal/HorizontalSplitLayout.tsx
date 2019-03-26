@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DraggableCore, DraggableData, DraggableEvent, DraggableEventHandler } from 'react-draggable';
 
-import './CommonLayout.css';
+import './Layout.css';
 
 export interface IProps {
     id: string
@@ -16,7 +16,7 @@ export interface IState {
     width: number
 }
 
-export default class HorizontalSplitLayout extends React.Component<IProps, IState> {
+export class HorizontalSplitLayout extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
         super(props);
@@ -25,7 +25,7 @@ export default class HorizontalSplitLayout extends React.Component<IProps, IStat
         };
     }
 
-    componentWillReceiveProps(nextProps: IProps) {
+    public componentWillReceiveProps(nextProps: IProps) {
         if (nextProps.initialWidth !== this.state.width) {
             this.setState({ width: nextProps.initialWidth ? nextProps.initialWidth : 200 })
         }

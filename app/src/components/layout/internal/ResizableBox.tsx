@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DraggableCore, DraggableData, DraggableEvent, DraggableEventHandler } from 'react-draggable';
 
-import './CommonLayout.css';
+import './Layout.css';
 
 export interface IProps {
     id: string
@@ -14,7 +14,7 @@ export interface IState {
     height: number
 }
 
-export default class ResizableBox extends React.Component<IProps, IState> {
+export class ResizableBox extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
         super(props);
@@ -23,7 +23,7 @@ export default class ResizableBox extends React.Component<IProps, IState> {
         };
     }
 
-    componentWillReceiveProps(nextProps: IProps) {
+    public componentWillReceiveProps(nextProps: IProps) {
         if (nextProps.intitalHeight !== this.state.height) {
             this.setState({ height: nextProps.intitalHeight ? nextProps.intitalHeight : 200 })
         }
@@ -48,7 +48,6 @@ export default class ResizableBox extends React.Component<IProps, IState> {
     private dragHandler = (handlerName: string): DraggableEventHandler => {
         return (e: DraggableEvent, data: DraggableData): void | false => {
 
-            console.log("State: " + this.state.height)
             const newHeight = this.state.height + data.deltaY;
             this.setState({ height: newHeight })
             if (this.props.onHeightChanged) {

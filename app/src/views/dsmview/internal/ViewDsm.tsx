@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { Card } from 'src/components/card';
 import { DSM } from 'src/components/dsm';
-import HorizontalSplitLayout from 'src/components/layout/HorizontalSplitLayout';
-import ResizableBox from 'src/components/layout/ResizableBox';
+import { HorizontalSplitLayout, ResizableBox } from 'src/components/layout';
 import SlizaaTree from 'src/components/slizaatree/internal/SlizaaTree';
 import { actionSelectNodeSelection } from 'src/redux/Actions';
 import { IAppState, INodeSelection } from 'src/redux/IAppState';
@@ -59,59 +58,55 @@ export class ViewDsm extends React.Component<IProps, IState> {
         return (
 
             <div>
-                <ResizableBox id="upperResizableBox" height={this.state.upperHeight} onHeightChanged={this.onHeightChanged}
-                    component={
-                        <HorizontalSplitLayout id="upper" onWidthChanged={this.onWidthChanged} width={this.state.treeWidth}
-                            left={
-                                <Card title="Hierarchical Graph" >
-                                    <ApolloConsumer>
-                                        {cl =>
-                                            <SlizaaTree
-                                                client={cl}
-                                                databaseId={this.props.databaseId}
-                                                hierarchicalGraphId={this.props.hierarchicalGraphId}
-                                                onSelect={this.onSelect}
-                                                onExpand={this.onExpand}
-                                                expandedKeys={[]} />
+                <ResizableBox id="upperResizableBox" intitalHeight={this.state.upperHeight} onHeightChanged={this.onHeightChanged} >
+                    <HorizontalSplitLayout id="upper" initialWidth={this.state.treeWidth} onWidthChanged={this.onWidthChanged}
+                        left={
+                            <Card title="Hierarchical Graph" >
+                                <ApolloConsumer>
+                                    {cl =>
+                                        <SlizaaTree
+                                            client={cl}
+                                            databaseId={this.props.databaseId}
+                                            hierarchicalGraphId={this.props.hierarchicalGraphId}
+                                            onSelect={this.onSelect}
+                                            onExpand={this.onExpand}
+                                            expandedKeys={[]} />
+                                    }
+                                </ApolloConsumer>
+                            </Card>
+                        }
+                        right={
+                            <Card title="Dependencies Overview" >
+                                <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables} fetchPolicy="no-cache">
+                                    {({ loading, data }) => {
+
+                                        if (loading) {
+                                            return null;
                                         }
-                                    </ApolloConsumer>
-                                </Card>
-                            }
-                            right={
-                                <Card title="Dependencies Overview" >
-                                    <Query<DsmForNodeChildren, DsmForNodeChildrenVariables> query={query} variables={queryVariables} fetchPolicy="no-cache">
-                                        {({ loading, data }) => {
 
-                                            if (loading) {
-                                                return null;
-                                            }
+                                        if (!data || !data.hierarchicalGraph || !data.hierarchicalGraph.node) {
+                                            return <div>UNDEFINED - TODO</div>
+                                        }
 
-                                            if (!data || !data.hierarchicalGraph || !data.hierarchicalGraph.node) {
-                                                return <div>UNDEFINED - TODO</div>
-                                            }
+                                        // get  the data
+                                        const { orderedNodes, cells, stronglyConnectedComponents } = data.hierarchicalGraph.node.children.dependencyMatrix
 
-                                            // get  the data
-                                            const { orderedNodes, cells, stronglyConnectedComponents } = data.hierarchicalGraph.node.children.dependencyMatrix
-
-                                            return <DSM labels={orderedNodes}
-                                                cells={cells}
-                                                stronglyConnectedComponents={stronglyConnectedComponents} />
-                                        }}
-                                    </Query>
-                                </Card>
-                            }
-                        />
-                    }
-                />
-                <ResizableBox id="lowerResizableBox" height={this.state.lowerHeight} onHeightChanged={this.onHeightChanged}
-                    component={
-                        <Card title="Dependencies Details" >
-                            <ul>
-                                {items}
-                            </ul>
-                        </Card>
-                    }
-                />
+                                        return <DSM labels={orderedNodes}
+                                            cells={cells}
+                                            stronglyConnectedComponents={stronglyConnectedComponents} />
+                                    }}
+                                </Query>
+                            </Card>
+                        }
+                    />
+                </ResizableBox>
+                <ResizableBox id="lowerResizableBox" intitalHeight={this.state.lowerHeight} onHeightChanged={this.onHeightChanged}>
+                    <Card title="Dependencies Details" >
+                        <ul>
+                            {items}
+                        </ul>
+                    </Card>
+                </ResizableBox>
             </div>
         );
     }

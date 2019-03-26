@@ -1,8 +1,7 @@
 import { storiesOf } from '@storybook/react';
 import * as React from 'react';
-import HorizontalSplitLayout from '../src/components/layout/HorizontalSplitLayout';
-import ResizableBox from '../src/components/layout/ResizableBox';
 import { Card } from '../src/components/card';
+import { HorizontalSplitLayout, ResizableBox } from './components/layout';
 
 storiesOf('Layout', module)
   .add('Resizable box (100px)', () => (
@@ -22,12 +21,12 @@ storiesOf('Layout', module)
         initialWidth={450}
         left={
           <Card title="Left">
-            <div style={{ backgroundColor: 'coral', width: "750px", height: "1000px" }}>Left</div>
+            <div style={{ backgroundColor: 'coral', width: "100%", height: "1000px" }}>Left</div>
           </Card>
         }
         right={
           <Card title="Right">
-            <div style={{ backgroundColor: 'red', width: "750px", height: "1000px" }}>Right</div>} />
-      </Card>} />
+            <div style={{ backgroundColor: 'red', width: "750px", height: "1000px" }}>Right</div>
+          </Card>} />
     </ResizableBox>
   ));
