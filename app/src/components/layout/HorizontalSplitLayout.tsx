@@ -5,19 +5,36 @@ import './CommonLayout.css';
 
 export interface IProps {
     id: string
-    width: number
     left: JSX.Element
     right: JSX.Element
+    initialWidth?: number
     gutter?: number
-    onWidthChanged: (id: string, newWidth: number) => void;
+    onWidthChanged?: (id: string, newWidth: number) => void;
 }
 
-export default class HorizontalSplitLayout extends React.Component<IProps, {}> {
+export interface IState {
+    width: number
+}
+
+export default class HorizontalSplitLayout extends React.Component<IProps, IState> {
+
+    constructor(props: IProps) {
+        super(props);
+        this.state = {
+            width: props.initialWidth ? props.initialWidth : 200
+        };
+    }
+
+    componentWillReceiveProps(nextProps: IProps) {
+        if (nextProps.initialWidth !== this.state.width) {
+            this.setState({ width: nextProps.initialWidth ? nextProps.initialWidth : 200 })
+        }
+    }
 
     public render() {
         return (
             <div className="contentFlexContainer" style={{ flexFlow: "row", height: "100%", overflow: "hidden", backgroundColor: "transparent" }}>
-                <div className="item item1" style={{ flex: "0 0 " + this.props.width + "px", overflow: "hidden" }}>
+                <div className="item item1" style={{ flex: "0 0 " + this.state.width + "px", overflow: "hidden" }}>
                     {this.props.left}
                 </div>
                 <DraggableCore
@@ -35,10 +52,13 @@ export default class HorizontalSplitLayout extends React.Component<IProps, {}> {
 
     private dragHandler = (handlerName: string): DraggableEventHandler => {
         return (e: DraggableEvent, data: DraggableData): void | false => {
-            const newWidth = this.props.width + data.deltaX;
+            const newWidth = this.state.width + data.deltaX;
             // Early return if no change after constraints
-            if (newWidth === this.props.width) { return };
-            this.props.onWidthChanged(this.props.id, newWidth);
+            if (newWidth === this.state.width) { return };
+            this.setState({ width: newWidth });
+            if (this.props.onWidthChanged) {
+                this.props.onWidthChanged(this.props.id, newWidth);
+            }
         }
     }
 }

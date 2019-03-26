@@ -5,25 +5,41 @@ import './CommonLayout.css';
 
 export interface IProps {
     id: string
-    height: number
-    gutter?: number
-    component: JSX.Element
-    onHeightChanged: (id: string, newHeight: number) => void;
+    intitalHeight?: number
+    gutterSize?: number
+    onHeightChanged?: (id: string, newHeight: number) => void;
 }
 
-export default class ResizableBox extends React.Component<IProps, {}> {
+export interface IState {
+    height: number
+}
+
+export default class ResizableBox extends React.Component<IProps, IState> {
+
+    constructor(props: IProps) {
+        super(props);
+        this.state = {
+            height: props.intitalHeight ? props.intitalHeight : 200
+        };
+    }
+
+    componentWillReceiveProps(nextProps: IProps) {
+        if (nextProps.intitalHeight !== this.state.height) {
+            this.setState({ height: nextProps.intitalHeight ? nextProps.intitalHeight : 200 })
+        }
+    }
 
     public render() {
         return (
             <div style={{ overflow: "hidden", backgroundColor: "transparent" }}>
-                <div style={{ height: this.props.height + "px", overflow: "hidden", backgroundColor: "transparent" }}>
-                   {this.props.component}
+                <div style={{ height: this.state.height + "px", overflow: "hidden", backgroundColor: "transparent" }}>
+                    {this.props.children}
                 </div>
                 <DraggableCore
                     onStop={this.dragHandler('onResizeStop')}
                     onStart={this.dragHandler('onResizeStart')}
                     onDrag={this.dragHandler('onResize')}>
-                    <div className="horizontalDivider" style={{ height: this.props.gutter ? this.props.gutter : 8 + "px" }} />
+                    <div className="horizontalDivider" style={{ height: this.props.gutterSize ? this.props.gutterSize : 8 + "px" }} />
                 </DraggableCore>
             </div>
         );
@@ -32,8 +48,12 @@ export default class ResizableBox extends React.Component<IProps, {}> {
     private dragHandler = (handlerName: string): DraggableEventHandler => {
         return (e: DraggableEvent, data: DraggableData): void | false => {
 
-            const newHeight = this.props.height + data.deltaY;
-            this.props.onHeightChanged(this.props.id, newHeight);
+            console.log("State: " + this.state.height)
+            const newHeight = this.state.height + data.deltaY;
+            this.setState({ height: newHeight })
+            if (this.props.onHeightChanged) {
+                this.props.onHeightChanged(this.props.id, newHeight);
+            }
         }
     }
 }
