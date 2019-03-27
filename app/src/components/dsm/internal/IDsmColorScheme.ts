@@ -58,7 +58,7 @@ export interface IDsmColorScheme {
   private BLACK = "#000000";
   // private VAR_1_MEDIUM = "#FFDE8A"
   private VAR_2_DARK_MEDIUM        = "#DEC585"
-  private VAR_3_DARK               = "#D1AE54"
+  // private VAR_3_DARK               = "#D1AE54"
   private VAR_4_LIGHT_MEDIUM       = "#FFEAB2"
   private VAR_5_LIGHT              = "#FFF3D3"
   private CYCLE_VAR_2_DARK_MEDIUM  = "#C37D64"
@@ -112,7 +112,7 @@ export interface IDsmColorScheme {
   }
 
   public getMatrixSeparatorColor() {
-    return this.VAR_3_DARK;
+    return this.VAR_2_DARK_MEDIUM;
   }
 
   public getMatrixBackgroundColor() {
@@ -132,6 +132,6 @@ export interface IDsmColorScheme {
   }
 
   public getMatrixMarkedCellColor() {
-    return this.VAR_3_DARK;
+    return this.VAR_2_DARK_MEDIUM;
   }
   }

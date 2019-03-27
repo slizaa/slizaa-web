@@ -1,7 +1,7 @@
 import { storiesOf } from '@storybook/react';
 import * as React from 'react';
 import { Card } from '../src/components/card';
-import { HorizontalSplitLayout, ResizableBox } from './components/layout';
+import { HorizontalSplitLayout, ResizableBox } from '../src/components/layout';
 
 storiesOf('Layout', module)
   .add('Resizable box (100px)', () => (

@@ -92,8 +92,10 @@ export class ViewDsm extends React.Component<IProps, IState> {
                                         const { orderedNodes, cells, stronglyConnectedComponents } = data.hierarchicalGraph.node.children.dependencyMatrix
 
                                         return <DSM labels={orderedNodes}
-                                            cells={cells}
-                                            stronglyConnectedComponents={stronglyConnectedComponents} />
+                                                    cells={cells}
+                                                    stronglyConnectedComponents={stronglyConnectedComponents}
+                                                    horizontalBoxSize={35}
+                                                    verticalBoxSize={35} />
                                     }}
                                 </Query>
                             </Card>
