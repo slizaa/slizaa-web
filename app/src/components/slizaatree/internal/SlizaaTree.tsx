@@ -28,7 +28,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeProp
     this.databaseId = props.databaseId;
     this.hierarchicalGraphId = props.hierarchicalGraphId;
 
-    this.slizaaTreeComponentModel = {rootNodes: [{title: "root", key: "-1", hasChildren: true, iconId: "default"}]};
+    this.slizaaTreeComponentModel = { rootNodes: [{ title: "root", key: "-1", hasChildren: true, iconId: "default" }] };
   }
 
   public onExpand = (expandedKeys: string[], info: AntTreeNodeExpandedEvent) => {
@@ -67,16 +67,16 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeProp
           if (result.data.hierarchicalGraph && result.data.hierarchicalGraph.node) {
             const resultChildren = result.data.hierarchicalGraph.node.children.nodes
             treeNode.props.dataRef.children = new Array(resultChildren.length);
-            
+
             for (let i = 0; i < resultChildren.length; i++) {
               treeNode.props.dataRef.children[i] = { title: resultChildren[i].text, key: resultChildren[i].id, parent: treeNode.props.dataRef, hasChildren: resultChildren[i].hasChildren, iconId: resultChildren[i].iconIdentifier };
             }
-            
+
             this.setState({
               rootNodes: [...this.slizaaTreeComponentModel.rootNodes]
             });
           }
-              
+
           resolve();
         })
         .catch(reason => {
@@ -88,6 +88,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeProp
   }
 
   public renderTreeNodes = (treeNodes: ISlizaaNode[]) => {
+
     return treeNodes.map((item: ISlizaaNode) => {
       if (item.children) {
         return (
@@ -97,6 +98,7 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeProp
             key={item.key}
             dataRef={item}
             className={item === this.slizaaTreeComponentModel.focusedNode ? 'slizaa-tree slizaa-focus' : 'slizaa-tree'}
+
           >
             {this.renderTreeNodes(item.children)}
           </Tree.TreeNode>
@@ -117,14 +119,14 @@ export class SlizaaTree extends React.Component<WithApolloClient<ISlizaaTreeProp
           onExpand={this.onExpand}
           showIcon={true}
           showLine={false}
-          style={{overflow: "auto"}}
+          style={{ overflow: "auto" }}
         >
           {this.renderTreeNodes(this.slizaaTreeComponentModel.rootNodes)}
         </Tree>
     );
   }
 
-  private trim(value: string) : string {
+  private trim(value: string): string {
 
     /*if (value.length > 25) {
       return value.substring(0, 23) + "...";

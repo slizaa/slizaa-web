@@ -33,7 +33,7 @@ export class ViewDsm extends React.Component<IProps, IState> {
 
         this.state = {
             lowerHeight: 371,
-            treeWidth: 200,
+            treeWidth: 400,
             upperHeight: 600,
         }
     }

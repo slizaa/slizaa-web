@@ -10,6 +10,7 @@ import { IAppState } from 'src/redux/IAppState';
 import ViewDsm from 'src/views/dsmview/internal/ViewDsm';
 
 import './MainView.css';
+import { DependencyVisualisation } from './SlizaaIcons';
 
 interface IProps {
   currentDatabase: string
@@ -35,56 +36,56 @@ export class MainView extends React.Component<IProps, IState> {
   public render() {
 
     // TODO
-    const imageSource = this.state.collapsed ? "favicon.ico" : "favicon.ico";
-  
+    const imageSource = "logo.svg";
+
     return (
       <BrowserRouter>
-        <Layout 
-            style={{ minHeight: '100vh' }}>
-          <Sider
-            theme="light"            
-            collapsible={true}
-            collapsed={this.state.collapsed}
-            onCollapse={this.onCollapse}
-            trigger={null}
-          >
-            <div className="main-view-sider-logo" >
+        <Layout
+          style={{ minHeight: '100vh' }}>
+          <Layout.Header style={{ padding: 0 }}>
               <Link to="/">
-                <img src={imageSource} alt="logo" />
+                <img className="slizaa-logo" src={imageSource} alt="logo" />
               </Link>
-            </div>
-            <Menu defaultSelectedKeys={['1']} 
-                  theme="light"
-                  mode="inline" >
-              <Menu.Item key="1">
-                <Icon type="pie-chart" />
-                <span>Deshboard</span>
-                <Link to="/" />
-              </Menu.Item>
-              <Menu.Item key="2">
-                <Icon type="setting" />
-                <span>Meseros</span>
-                <Link to="/meseros" />
-              </Menu.Item>
-            </Menu>
-          </Sider>
+            <Icon
+              className="trigger"
+              type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+              onClick={this.toggleCollapsed}
+            />
+            <SlizaaHgChooser
+              currentDatabase={this.props.currentDatabase}
+              currentHierarchicalGraph={this.props.currentHierarchicalGraph}
+              onDatabaseSelect={this.props.dispatchSelectDatabase}
+              onHierarchicalGraphSelect={this.props.dispatchSelectHierarchicalGraph}
+            />
+          </Layout.Header>
           <Layout>
-            <Layout.Header style={{ padding: 0 }}>
-              <Icon
-                className="trigger"
-                type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
-                onClick={this.toggleCollapsed}
-              />
-              <SlizaaHgChooser
-                currentDatabase={this.props.currentDatabase}
-                currentHierarchicalGraph={this.props.currentHierarchicalGraph}
-                onDatabaseSelect={this.props.dispatchSelectDatabase}
-                onHierarchicalGraphSelect={this.props.dispatchSelectHierarchicalGraph}
-              />
-            </Layout.Header>
+            <Sider
+              theme="dark"
+              collapsible={true}
+              collapsed={this.state.collapsed}
+              onCollapse={this.onCollapse}
+              trigger={null}
+              collapsedWidth={0}
+              width={170}
+            >
+              <Menu defaultSelectedKeys={['1']}
+                theme="dark"
+                mode="inline" >
+                <Menu.Item key="1">
+                  <Icon component={DependencyVisualisation} />
+                  <span>Dependencies</span>
+                  <Link to="/" />
+                </Menu.Item>
+                <Menu.Item key="2">
+                  <Icon type="setting" />
+                  <span>Settings</span>
+                  <Link to="/settings" />
+                </Menu.Item>
+              </Menu>
+            </Sider>
             <Layout.Content style={{ padding: 8, minHeight: 280 }}>
               <Route exact={true} path="/" component={ViewDsm} />
-              <Route path="/meseros" component={ViewDsm} />
+              <Route path="/settings" component={ViewDsm} />
             </Layout.Content>
           </Layout>
         </Layout>

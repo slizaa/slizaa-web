@@ -6,7 +6,7 @@ function createCells(count: number): Array<{ row: number, column: number, value:
   const result: Array<{ row: number, column: number, value: number }> = [];
   for (let i = 0; i < count; i++) {
     for (let j = 0; j < count; j++) {
-      result.push({row: i, column: j, value: 1});      
+      result.push({row: i, column: j, value: i * j});      
     }
   }
   return result;
@@ -15,7 +15,7 @@ function createCells(count: number): Array<{ row: number, column: number, value:
 function createLabels(count: number): Array<{ id: string, text: string }> {
   const result: Array<{ id: string, text: string }> = [];
   for (let index = 0; index < count; index++) {
-    result.push({id: "Module " + index, text: "Module " + index});
+    result.push({id: "Module " + index, text: "Ueberlange Modulnamen " + index});
   }
   return result;
 }

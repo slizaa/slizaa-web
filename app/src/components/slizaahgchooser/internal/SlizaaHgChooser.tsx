@@ -1,4 +1,4 @@
-import { Button, Dropdown, Menu } from 'antd';
+import { Button, Dropdown, Icon, Menu } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import * as React from 'react';
 import { Query } from 'react-apollo';
@@ -48,15 +48,23 @@ export class SlizaaHgChooser extends React.Component<ISlizaaHgChooserProps, ISli
                         {hierarchicalGraphMenuItems}
                     </Menu>;
 
-                    const currentDatabaseLabel = (this.props.currentDatabase) ? this.props.currentDatabase : "<->";
-                    const currentHierarchicalGraphLabel = (this.props.currentHierarchicalGraph) ? this.props.currentHierarchicalGraph : "<->";
-
-                    return <div style={{ display: "inline-block" }}>
-                        <Dropdown className="dropDownDatabases" overlay={databasesMenu} placement="bottomLeft">
-                            <Button>Database: {currentDatabaseLabel}</Button>
+                    return <div className="slizaaHgChooser" style={{ display: "inline-block", float: "right" }}>
+                        <Dropdown className="slizaaHgChooser-dropdown slizaaHgChooser-dropdown-database" overlay={databasesMenu} placement="bottomLeft">
+                            <Button className="slizaaHgChooser-button slizaaHgChooser-button-database">
+                                <div className="slizaaHgChooser-button-key" style={{display: "inline-block"}}>Database:</div>
+                                <div className="slizaaHgChooser-button-value" style={{display: "inline-block"}}>
+                                    {this.props.currentDatabase ? this.props.currentDatabase : <Icon type="disconnect" /> }
+                                </div>
+                            </Button>
                         </Dropdown>
-                        <Dropdown className="dropDownHierarchicalGraphs" overlay={hierarchicalGraphsMenu} placement="bottomCenter">
-                            <Button>Hierarchical Graph: {currentHierarchicalGraphLabel}</Button>
+
+                        <Dropdown className="slizaaHgChooser-dropdown slizaaHgChooser-dropdown-hierarchicalgraph" overlay={hierarchicalGraphsMenu} placement="bottomLeft">
+                            <Button className="slizaaHgChooser-button slizaaHgChooser-button-hierarchicalgraph">
+                                <div className="slizaaHgChooser-button-key" style={{display: "inline-block"}}>Hierarchical Graph:</div>
+                                <div className="slizaaHgChooser-button-value" style={{display: "inline-block"}}>
+                                    {this.props.currentHierarchicalGraph ? this.props.currentHierarchicalGraph : <Icon type="disconnect" /> }
+                                </div>
+                            </Button>
                         </Dropdown>
                     </div>
                 } else {

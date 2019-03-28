@@ -1,4 +1,32 @@
-.dropDownDatabases {
+
+.slizaaHgChooser {
+    display: "inline-block";
+    float: "right";
     margin-right: 15px; 
+}
+
+.slizaaHgChooser-dropdown-database {
+    margin-right: 15px; 
+}
+
+.slizaaHgChooser-button {
+    padding: 0px;
+    border-radius: 5px;
+}
+
+.slizaaHgChooser-button-key {
+    height: 100%;
+    padding: 5px 2px 5px 8px;
+    border-radius: 5px 0px 0px 5px;
+    background-color: transparent;
+    color: black;
+}
+
+.slizaaHgChooser-button-value {
+    height: 100%;
+    padding: 5px 8px 5px 2px;
+    border-radius: 5px 0px 0px 5px;
+    background-color: transparent;
+    color: black;
 }
   

@@ -38,6 +38,8 @@ export interface IDsmStronglyConnectedComponent {
 export class DSM extends React.Component<IProps, IState> {
 
     private readonly FONT = "12px Arial";
+    private readonly SEP_SIZE = 4;
+    private readonly TEXT_CLIP_PADDING = 5;
 
     private canvasRef: HTMLCanvasElement | null;
     private renderingContext: CanvasRenderingContext2D | null;
@@ -134,6 +136,7 @@ export class DSM extends React.Component<IProps, IState> {
             this.markedCellLayerrenderingContext.canvas.width = width;
             this.markedCellLayerrenderingContext.canvas.height = height;
 
+            //
             this.setupCanvas();
 
             // create structures
@@ -146,115 +149,17 @@ export class DSM extends React.Component<IProps, IState> {
                 this.matrixLabels[cell.column][cell.row] = '' + cell.value;
             });
 
-            //
-            this.drawMHorizontalBar(this.renderingContext, width, height, this.sccNodePositions);
-            this.drawMVerticalBar(this.renderingContext, width, height, this.sccNodePositions);
+            // draw the horizontal bar
+            for (let i = 0; i < this.props.labels.length; i++) {
+                this.drawHorizontalBar(i, this.renderingContext, false);
+            }
+            // draw the vertical bar
+            for (let i = 0; i < this.props.labels.length; i++) {
+                this.drawVerticalBar(i, this.renderingContext, false);
+            }
+            // this.drawMVerticalBar(this.renderingContext, width, height, this.sccNodePositions);
             this.drawMatrix(this.renderingContext, width, height);
         }
-    }
-
-    private drawMHorizontalBar = (renderingContext2D: CanvasRenderingContext2D, width: number, height: number, sccNodePositions: number[]) => {
-
-        // draw the horizontal bar
-        renderingContext2D.fillStyle = this.colorScheme.getSideMarkerBackgroundColor();
-        renderingContext2D.fillRect(this.state.verticalSideMarkerWidth, 0, width, this.state.horizontalSideMarkerHeight);
-
-        // draw the makers
-        for (let i = 0; i < this.props.labels.length; i++) {
-
-            // compute the cycles
-            const isInCycle = sccNodePositions.includes(i);
-
-            // draw the "even" marker
-            if (isInCycle) {
-
-                // draw the background
-                renderingContext2D.fillStyle = this.colorScheme.getCycleSideMarkerColor();
-                renderingContext2D.fillRect(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i), 0,
-                    this.getHorizontalSliceSize(i + 1) - this.getHorizontalSliceSize(i), this.state.horizontalSideMarkerHeight);
-            }
-
-            //
-            renderingContext2D.strokeStyle = isInCycle && sccNodePositions.includes(i - 1) ? this.colorScheme.getCycleSideMarkerSeparatorColor() : this.colorScheme.getSideMarkerSeparatorColor();
-            renderingContext2D.beginPath();
-            renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i), 0);
-            renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i), this.state.horizontalSideMarkerHeight);
-            renderingContext2D.stroke();
-
-            // DRAW HORIZONTAL TEXT
-            renderingContext2D.save();
-
-            // CLIPPING
-            renderingContext2D.beginPath();
-            renderingContext2D.rect(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i), 0,
-                this.getHorizontalSliceSize(i + 1) - this.getHorizontalSliceSize(i), this.state.horizontalSideMarkerHeight);
-            renderingContext2D.clip();
-
-            // ROTATE
-            renderingContext2D.translate(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(i) + this.getBoxSize().getHorizontalBoxSize() / 2, 10);
-            renderingContext2D.rotate(1 * Math.PI / 2);
-
-            renderingContext2D.fillStyle = this.colorScheme.getSideMarkerTextColor();
-            renderingContext2D.font = this.FONT;
-            renderingContext2D.textAlign = "left";
-            renderingContext2D.textBaseline = "middle";
-            renderingContext2D.fillText(this.props.labels[i].text, 0, 0);
-
-            renderingContext2D.restore();
-        }
-
-        // draw the last line
-        renderingContext2D.strokeStyle = this.colorScheme.getSideMarkerSeparatorColor();
-        renderingContext2D.beginPath();
-        renderingContext2D.moveTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.props.labels.length), 0);
-        renderingContext2D.lineTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.props.labels.length), this.state.horizontalSideMarkerHeight);
-        renderingContext2D.stroke();
-    }
-
-    private drawMVerticalBar = (renderingContext2D: CanvasRenderingContext2D, width: number, height: number, sccNodePositions: number[]) => {
-
-        // draw the vertical bar
-        renderingContext2D.fillStyle = this.colorScheme.getSideMarkerBackgroundColor();
-        renderingContext2D.fillRect(0, this.state.horizontalSideMarkerHeight, this.state.verticalSideMarkerWidth, this.getVerticalSliceSize(this.props.labels.length));
-
-        // draw the makers
-        for (let i = 0; i < this.props.labels.length; i++) {
-
-            //
-            const isInCycle = sccNodePositions.includes(i);
-
-            // the cycle
-            if (isInCycle) {
-
-                // draw the background
-                renderingContext2D.fillStyle = this.colorScheme.getCycleSideMarkerColor();
-                renderingContext2D.fillRect(0, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(i), this.state.verticalSideMarkerWidth,
-                    this.getVerticalSliceSize(i + 1) - this.getVerticalSliceSize(i));
-            }
-
-            // draw the line
-            renderingContext2D.strokeStyle = isInCycle && sccNodePositions.includes(i - 1) ? this.colorScheme.getCycleSideMarkerSeparatorColor() : this.colorScheme.getSideMarkerSeparatorColor();
-            renderingContext2D.beginPath();
-            renderingContext2D.moveTo(0, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(i));
-            renderingContext2D.lineTo(this.state.verticalSideMarkerWidth, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(i));
-            renderingContext2D.stroke();
-
-            // draw the text
-            renderingContext2D.fillStyle = this.colorScheme.getSideMarkerTextColor();
-            renderingContext2D.font = this.FONT;
-            renderingContext2D.textAlign = "left";
-            renderingContext2D.textBaseline = "middle";
-            renderingContext2D.fillText(this.props.labels[i].text,
-                10,
-                this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(i) + this.getBoxSize().getVerticalBoxSize() / 2);
-        }
-
-        // draw the last line
-        renderingContext2D.strokeStyle = this.colorScheme.getSideMarkerSeparatorColor();
-        renderingContext2D.beginPath();
-        renderingContext2D.moveTo(0, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.props.labels.length));
-        renderingContext2D.lineTo(this.state.verticalSideMarkerWidth, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.props.labels.length));
-        renderingContext2D.stroke();
     }
 
     private drawMatrix = (renderingContext2D: CanvasRenderingContext2D, width: number, height: number) => {
@@ -352,9 +257,9 @@ export class DSM extends React.Component<IProps, IState> {
             //
             if (this.markedCellLayerCanvasRef && this.markedCellLayerrenderingContext) {
 
-
                 // clear rect
                 if (this.currentMarkedX !== undefined && this.currentMarkedY !== undefined) {
+
                     // Store the current transformation matrix
                     this.markedCellLayerrenderingContext.save();
 
@@ -377,46 +282,10 @@ export class DSM extends React.Component<IProps, IState> {
                     this.markCell(this.currentMarkedY, this.currentMarkedX);
 
                     // mark vertical bar
-                    this.markedCellLayerrenderingContext.fillStyle = this.isLabelInCycle(this.currentMarkedY) ? this.colorScheme.getCycleSideMarkerMarkedColor() : this.colorScheme.getSideMarkerMarkedColor();
-                    this.markedCellLayerrenderingContext.fillRect(0,
-                        this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.currentMarkedY),
-                        this.state.verticalSideMarkerWidth,
-                        this.getVerticalSliceSize(this.currentMarkedY + 1) - this.getVerticalSliceSize(this.currentMarkedY));
-
-                    this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getSideMarkerTextColor();
-                    this.markedCellLayerrenderingContext.font = this.FONT;
-                    this.markedCellLayerrenderingContext.textAlign = "left";
-                    this.markedCellLayerrenderingContext.textBaseline = "middle";
-                    this.markedCellLayerrenderingContext.fillText(this.props.labels[this.currentMarkedY].text,
-                        10,
-                        this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.currentMarkedY) + this.getBoxSize().getVerticalBoxSize() / 2);
+                    this.drawVerticalBar(this.currentMarkedY, this.markedCellLayerrenderingContext, true);
 
                     // mark horizontal bar
-                    this.markedCellLayerrenderingContext.fillStyle = this.isLabelInCycle(this.currentMarkedX) ? this.colorScheme.getCycleSideMarkerMarkedColor() : this.colorScheme.getSideMarkerMarkedColor();
-                    this.markedCellLayerrenderingContext.fillRect(
-                        this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.currentMarkedX),
-                        0,
-                        this.getHorizontalSliceSize(this.currentMarkedX + 1) - this.getHorizontalSliceSize(this.currentMarkedX),
-                        this.state.horizontalSideMarkerHeight);
-
-                    // DRAW HORIZONTAL TEXT
-                    this.markedCellLayerrenderingContext.save();
-
-                    // CLIPPING
-                    this.markedCellLayerrenderingContext.beginPath();
-                    this.markedCellLayerrenderingContext.rect(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.currentMarkedX), 0,
-                        this.getHorizontalSliceSize(this.currentMarkedX + 1) - this.getHorizontalSliceSize(this.currentMarkedX), this.state.horizontalSideMarkerHeight);
-                        this.markedCellLayerrenderingContext.clip();
-
-                    // ROTATE
-                    this.markedCellLayerrenderingContext.translate(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.currentMarkedX) + this.getBoxSize().getHorizontalBoxSize() / 2, 10);
-                    this.markedCellLayerrenderingContext.rotate(1 * Math.PI / 2);
-                    this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getSideMarkerTextColor();
-                    this.markedCellLayerrenderingContext.font = this.FONT;
-                    this.markedCellLayerrenderingContext.textAlign = "left";
-                    this.markedCellLayerrenderingContext.textBaseline = "middle";
-                    this.markedCellLayerrenderingContext.fillText(this.props.labels[this.currentMarkedX].text, 0, 0);
-                    this.markedCellLayerrenderingContext.restore();
+                    this.drawHorizontalBar(this.currentMarkedX, this.markedCellLayerrenderingContext, true);
                 }
             }
         }
@@ -424,6 +293,111 @@ export class DSM extends React.Component<IProps, IState> {
         if (this.mouseDown) {
             requestAnimationFrame(this.updateMarkedLayer);
         }
+    }
+
+    private drawVerticalBar = (y: number, renderingContext: CanvasRenderingContext2D, mark: boolean) => {
+
+        renderingContext.save();
+
+        const isInCycle = this.isLabelInCycle(y);
+
+        // step 1: fill the rect
+        if (mark) {
+            renderingContext.fillStyle = isInCycle ? this.colorScheme.getCycleSideMarkerMarkedColor() : this.colorScheme.getSideMarkerMarkedColor();
+        } else {
+            renderingContext.fillStyle = isInCycle ? this.colorScheme.getCycleSideMarkerColor() : this.colorScheme.getSideMarkerBackgroundColor();
+        }
+
+        renderingContext.fillRect(
+            0,
+            this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y),
+            this.state.verticalSideMarkerWidth - this.SEP_SIZE,
+            this.getVerticalSliceSize(y + 1) - this.getVerticalSliceSize(y));
+
+        // step 2: separators   
+        renderingContext.strokeStyle = isInCycle ? this.colorScheme.getCycleSideMarkerSeparatorColor() : this.colorScheme.getSideMarkerSeparatorColor();
+        renderingContext.beginPath();
+        renderingContext.moveTo(0, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y));
+        renderingContext.lineTo(this.state.verticalSideMarkerWidth - this.SEP_SIZE, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y));
+        renderingContext.moveTo(this.state.verticalSideMarkerWidth - this.SEP_SIZE, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y));
+        renderingContext.lineTo(this.state.verticalSideMarkerWidth - this.SEP_SIZE, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y + 1));
+        if (y === this.props.labels.length - 1) {
+            renderingContext.moveTo(0, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.props.labels.length));
+            renderingContext.lineTo(this.state.verticalSideMarkerWidth - this.SEP_SIZE, this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(this.props.labels.length));
+        }
+        renderingContext.stroke();
+
+        // step 3: re-draw the text
+        // ...set the clipping area
+        renderingContext.beginPath();
+        renderingContext.rect(
+            0,
+            this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y),
+            this.state.verticalSideMarkerWidth - (this.SEP_SIZE + this.TEXT_CLIP_PADDING),
+            this.getVerticalSliceSize(y + 1) - this.getVerticalSliceSize(y));
+        renderingContext.clip();
+
+        // ...draw rotated text
+        renderingContext.fillStyle = this.colorScheme.getSideMarkerTextColor();
+        renderingContext.font = this.FONT;
+        renderingContext.textAlign = "left";
+        renderingContext.textBaseline = "middle";
+        renderingContext.fillText(this.props.labels[y].text,
+            10,
+            this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y) + this.getBoxSize().getVerticalBoxSize() / 2);
+
+        renderingContext.restore();
+    }
+
+    private drawHorizontalBar = (x: number, renderingContext: CanvasRenderingContext2D, mark: boolean) => {
+
+        renderingContext.save();
+
+        const isInCycle = this.isLabelInCycle(x);
+
+        // step 1: fill the rect
+        if (mark) {
+            renderingContext.fillStyle = isInCycle ? this.colorScheme.getCycleSideMarkerMarkedColor() : this.colorScheme.getSideMarkerMarkedColor();
+        } else {
+            renderingContext.fillStyle = isInCycle ? this.colorScheme.getCycleSideMarkerColor() : this.colorScheme.getSideMarkerBackgroundColor();
+        }
+
+        renderingContext.fillRect(
+            this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x),
+            0,
+            this.getHorizontalSliceSize(x + 1) - this.getHorizontalSliceSize(x),
+            this.state.horizontalSideMarkerHeight - this.SEP_SIZE);
+
+        // step 2: separators
+        renderingContext.strokeStyle = isInCycle ? this.colorScheme.getCycleSideMarkerSeparatorColor() : this.colorScheme.getSideMarkerSeparatorColor();
+        renderingContext.beginPath();
+        renderingContext.moveTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x), 0);
+        renderingContext.lineTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x), this.state.horizontalSideMarkerHeight - this.SEP_SIZE);
+        renderingContext.moveTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x), this.state.horizontalSideMarkerHeight - this.SEP_SIZE);
+        renderingContext.lineTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x + 1), this.state.horizontalSideMarkerHeight - this.SEP_SIZE);
+        if (x === this.props.labels.length - 1) {
+            renderingContext.moveTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.props.labels.length), 0);
+            renderingContext.lineTo(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(this.props.labels.length), this.state.horizontalSideMarkerHeight - this.SEP_SIZE);
+        }
+        renderingContext.stroke();
+
+        // step 2: re-draw the text
+        // ...set the clipping area
+        renderingContext.beginPath();
+        renderingContext.rect(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x), 0,
+            this.getHorizontalSliceSize(x + 1) - this.getHorizontalSliceSize(x), this.state.horizontalSideMarkerHeight - (this.SEP_SIZE + this.TEXT_CLIP_PADDING));
+        renderingContext.clip();
+
+        // ...draw rotated text
+        renderingContext.translate(this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x) + this.getBoxSize().getHorizontalBoxSize() / 2, 10);
+        renderingContext.rotate(1 * Math.PI / 2);
+        renderingContext.fillStyle = this.colorScheme.getSideMarkerTextColor();
+        renderingContext.font = this.FONT;
+        renderingContext.textAlign = "left";
+        renderingContext.textBaseline = "middle";
+        renderingContext.fillText(this.props.labels[x].text, 0, 0);
+
+        renderingContext.restore();
     }
 
     private markCell = (x: number, y: number) => {
@@ -439,16 +413,6 @@ export class DSM extends React.Component<IProps, IState> {
                 this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y) + 1,
                 this.getBoxSize().getHorizontalBoxSize() - 2,
                 this.getBoxSize().getVerticalBoxSize() - 2);
-
-            // if (x !== y && this.matrixLabels[x][y] !== '0') {
-            //     this.markedCellLayerrenderingContext.fillStyle = this.colorScheme.getMatrixTextColor();
-            //     this.markedCellLayerrenderingContext.font = this.FONT;
-            //     this.markedCellLayerrenderingContext.textAlign = "center";
-            //     this.markedCellLayerrenderingContext.textBaseline = "middle";
-            //     this.markedCellLayerrenderingContext.fillText(this.matrixLabels[x][y],
-            //         this.state.verticalSideMarkerWidth + this.getHorizontalSliceSize(x) + this.getBoxSize().getHorizontalBoxSize() / 2,
-            //         this.state.horizontalSideMarkerHeight + this.getVerticalSliceSize(y) + this.getBoxSize().getVerticalBoxSize() / 2);
-            // }
 
             this.markedCellLayerrenderingContext.restore();
         }

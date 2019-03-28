@@ -1,12 +1,12 @@
 @import '~antd/dist/antd.css';
 
-.ant-menu-vertical, .ant-menu-vertical-left {
+.ant-menu, .ant-menu-left {
   border-right: none;
-  /* background-color: #bdc3c7; */
+  background-color: #2f353a;
 }
 
 .ant-layout-sider {
-  /* background-color: #bdc3c7; */
+  background-color: #2f353a;
 }
 
 .ant-layout-header {
@@ -14,14 +14,16 @@
 }
 
 .main-view-sider-logo {
-  /* background-color: #3498db; */
+  background-color: #fff;
 }
 
-.logo {
-    height: 32px;
-    background: rgba(255,255,255,.2);
-    margin: 16px;
-  }
+.ant-layout {
+  background-color: #e4e5e6;
+}
+
+.ant-menu {
+  margin-top: 10px;
+}
 
 .mr5 {
   margin-right: 5px;
@@ -32,6 +34,7 @@
 }
 
 .trigger {
+  vertical-align: middle;
   font-size: 18px;
   line-height: 64px;
   padding: 0 24px;
