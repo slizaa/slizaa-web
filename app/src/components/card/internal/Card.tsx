@@ -3,6 +3,7 @@ import './Card.css';
 
 export interface IProps {
     title: string
+    allowOverflow?: boolean
 }
 
 export class Card extends React.Component<IProps> {
@@ -16,10 +17,15 @@ export class Card extends React.Component<IProps> {
     };
 
     public render() {
+
+        const body = this.props.allowOverflow !== undefined && !this.props.allowOverflow ?
+            <div className="slizaa-card-body" style={{ flex: "0 0 0px"}} >{this.props.children}</div> :
+            <div className="slizaa-card-body" style={{ flex: "1 0 0px", overflow: 'auto' }} >{this.props.children}</div>;
+
         return (
             <div className="slizaa-card" style={this.cardStyle}>
                 <div className="slizaa-card-title" style={{ flex: "0 0 0px" }}>{this.props.title}</div>
-                <div className="slizaa-card-body" style={{ flex: "1 0 0px", overflow: 'auto' }} >{this.props.children}</div>
+                {body}
             </div>
         );
     }

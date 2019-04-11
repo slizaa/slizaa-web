@@ -1,0 +1,1 @@
+export { GraphDbConfigurationEditor } from './internal/GraphDbConfigurationEditor';

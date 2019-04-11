@@ -9,6 +9,8 @@ import { actionSelectDatabase, actionSelectHierarchicalGraph } from 'src/redux/A
 import { IAppState } from 'src/redux/IAppState';
 import ViewDsm from 'src/views/dsmview/internal/ViewDsm';
 
+import { SelectParam } from 'antd/lib/menu';
+import { SettingsView } from 'src/views/settingsview';
 import './MainView.css';
 import { DependencyVisualisation } from './SlizaaIcons';
 
@@ -20,6 +22,7 @@ interface IProps {
 }
 interface IState {
   collapsed: boolean
+  selectedKeys?: string[]
 }
 export class MainView extends React.Component<IProps, IState> {
 
@@ -68,9 +71,10 @@ export class MainView extends React.Component<IProps, IState> {
               collapsedWidth={0}
               width={170}
             >
-              <Menu defaultSelectedKeys={['1']}
+              <Menu defaultSelectedKeys={this.state.selectedKeys ? this.state.selectedKeys : ['1']}
                 theme="dark"
-                mode="inline" >
+                mode="inline" 
+                onSelect={this.onSelect}>
                 <Menu.Item key="1">
                   <Icon component={DependencyVisualisation} />
                   <span>Dependencies</span>
@@ -85,13 +89,19 @@ export class MainView extends React.Component<IProps, IState> {
             </Sider>
             <Layout.Content style={{ padding: 8, minHeight: 280 }}>
               <Route exact={true} path="/" component={ViewDsm} />
-              <Route path="/settings" component={ViewDsm} />
+              <Route path="/settings" component={SettingsView} />
             </Layout.Content>
           </Layout>
         </Layout>
       </BrowserRouter>
 
     )
+  }
+
+  protected onSelect = (p:SelectParam) => {
+    // tslint:disable-next-line:no-console
+    console.log(p);
+    this.setState({ ...this.state, selectedKeys: p.selectedKeys });
   }
 
   protected onCollapse(isCollapsed: boolean) {
