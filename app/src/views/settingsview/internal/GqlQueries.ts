@@ -5,6 +5,7 @@ export const GQ_ALL_GRAPH_DATABASES = gql`
     graphDatabases {
       identifier
       state
+      possibleActions
       port
       contentDefinition {
         contentDefinitionType {

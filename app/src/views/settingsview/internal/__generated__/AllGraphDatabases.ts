@@ -31,6 +31,7 @@ export interface AllGraphDatabases_graphDatabases {
   __typename: "GraphDatabase";
   identifier: string;
   state: string;
+  possibleActions: string[];
   port: number;
   contentDefinition: AllGraphDatabases_graphDatabases_contentDefinition | null;
   hierarchicalGraphs: AllGraphDatabases_graphDatabases_hierarchicalGraphs[];

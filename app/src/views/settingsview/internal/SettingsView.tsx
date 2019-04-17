@@ -15,7 +15,7 @@ export class SettingsView extends React.Component<{}, {}> {
         }
         if (data && data.graphDatabases) {
 
-         const content = data.graphDatabases.map(db => <GraphDbConfigurationEditor key={db.identifier} graphdatabase={db}/>);
+         const content = data.graphDatabases.map(db => <GraphDbConfigurationEditor key={db.identifier} graphdatabase={db} />);
 
           return <div>
             <Button type="dashed"><Icon type="plus" /> Add internal GraphDB</Button>
