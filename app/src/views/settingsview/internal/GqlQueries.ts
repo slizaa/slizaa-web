@@ -5,11 +5,11 @@ export const GQ_ALL_GRAPH_DATABASES = gql`
     graphDatabases {
       identifier
       state
-      possibleActions
+      availableActions
       port
       contentDefinition {
-        contentDefinitionType {
-          factoryId
+        type {
+          identifier
           name
           description
         }

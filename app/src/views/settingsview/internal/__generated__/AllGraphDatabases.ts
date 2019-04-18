@@ -6,16 +6,16 @@
 // GraphQL query operation: AllGraphDatabases
 // ====================================================
 
-export interface AllGraphDatabases_graphDatabases_contentDefinition_contentDefinitionType {
+export interface AllGraphDatabases_graphDatabases_contentDefinition_type {
   __typename: "ContentDefinitionType";
-  factoryId: string;
+  identifier: string;
   name: string;
   description: string | null;
 }
 
 export interface AllGraphDatabases_graphDatabases_contentDefinition {
   __typename: "ContentDefinition";
-  contentDefinitionType: AllGraphDatabases_graphDatabases_contentDefinition_contentDefinitionType;
+  type: AllGraphDatabases_graphDatabases_contentDefinition_type;
   definition: string;
 }
 
@@ -31,7 +31,7 @@ export interface AllGraphDatabases_graphDatabases {
   __typename: "GraphDatabase";
   identifier: string;
   state: string;
-  possibleActions: string[];
+  availableActions: string[];
   port: number;
   contentDefinition: AllGraphDatabases_graphDatabases_contentDefinition | null;
   hierarchicalGraphs: AllGraphDatabases_graphDatabases_hierarchicalGraphs[];

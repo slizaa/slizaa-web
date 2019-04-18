@@ -6,7 +6,7 @@ import { Card } from '../../card';
 export interface IGraphDbConfiguration {
     identifier: string
     state: string
-    possibleActions: string[]
+    availableActions: string[]
     port: number
     hierarchicalGraphs: IHierarchicalGraph[]
 
@@ -25,7 +25,7 @@ export class GraphDbConfigurationEditor extends React.Component<IGraphDbConfigur
 
     public render() {
 
-        const menuItems = this.props.graphdatabase.possibleActions.map(action => <Menu.Item key="action">{action}</Menu.Item>);
+        const menuItems = this.props.graphdatabase.availableActions.map(action => <Menu.Item key="action">{action}</Menu.Item>);
         const menu = <Menu onClick={this.onClick}>
                 {menuItems}
             </Menu>;

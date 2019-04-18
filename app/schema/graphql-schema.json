@@ -14,7 +14,7 @@
         "description": "The Query type",
         "fields": [
           {
-            "name": "contentDefinitionFactories",
+            "name": "contentDefinitionTypes",
             "description": "",
             "args": [],
             "type": {
@@ -228,7 +228,7 @@
         "description": "",
         "fields": [
           {
-            "name": "factoryId",
+            "name": "identifier",
             "description": "",
             "args": [],
             "type": {
@@ -335,7 +335,7 @@
             "deprecationReason": null
           },
           {
-            "name": "possibleActions",
+            "name": "availableActions",
             "description": "",
             "args": [],
             "type": {
@@ -459,7 +459,7 @@
         "description": "",
         "fields": [
           {
-            "name": "contentDefinitionType",
+            "name": "type",
             "description": "",
             "args": [],
             "type": {
