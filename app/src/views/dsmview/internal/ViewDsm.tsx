@@ -1,4 +1,5 @@
 
+import { Spin } from 'antd';
 import * as React from 'react';
 import { ApolloConsumer, Query } from 'react-apollo';
 import { connect } from 'react-redux';
@@ -81,7 +82,7 @@ export class ViewDsm extends React.Component<IProps, IState> {
                                     {({ loading, data }) => {
 
                                         if (loading) {
-                                            return null;
+                                            return <Spin size="large" />;
                                         }
 
                                         if (!data || !data.hierarchicalGraph || !data.hierarchicalGraph.node) {

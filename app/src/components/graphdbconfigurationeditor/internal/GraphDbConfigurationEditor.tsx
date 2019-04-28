@@ -1,4 +1,4 @@
-import { Button, Dropdown, Icon, Menu, Tabs } from 'antd';
+import { Button, Icon, Tabs } from 'antd';
 import { ClickParam } from 'antd/lib/menu';
 import * as React from 'react';
 import { Card } from '../../card';
@@ -25,10 +25,10 @@ export class GraphDbConfigurationEditor extends React.Component<IGraphDbConfigur
 
     public render() {
 
-        const menuItems = this.props.graphdatabase.availableActions.map(action => <Menu.Item key="action">{action}</Menu.Item>);
-        const menu = <Menu onClick={this.onClick}>
-                {menuItems}
-            </Menu>;
+        // const menuItems = this.props.graphdatabase.availableActions.map(action => <Menu.Item key="action">{action}</Menu.Item>);
+        // const menu = <Menu onClick={this.onClick}>
+        //        {menuItems}
+        //    </Menu>;
 
         const hierarchicalGraphs = this.props.graphdatabase.hierarchicalGraphs.map(hg => <Tabs.TabPane tab={hg.identifier} key={hg.identifier}>{hg.identifier}</Tabs.TabPane>);
 
@@ -38,11 +38,10 @@ export class GraphDbConfigurationEditor extends React.Component<IGraphDbConfigur
                     <div>{this.props.graphdatabase.identifier}</div>
                     <div>{this.props.graphdatabase.state}</div>
                     <div>{this.props.graphdatabase.port}</div>
-                    <Dropdown overlay={menu} >
                         <Button >
                             {this.props.graphdatabase.state} <Icon type="down" />
                         </Button>
-                    </Dropdown>
+                    
                     <Tabs defaultActiveKey="1" >
                         {hierarchicalGraphs}
                     </Tabs>
